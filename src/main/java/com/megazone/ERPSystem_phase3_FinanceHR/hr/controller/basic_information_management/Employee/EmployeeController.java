@@ -133,4 +133,10 @@ public class EmployeeController {
         }
     }
 
+    @PostMapping("/employee/workerAll")
+    public ResponseEntity<List<EmployeeOneDTO>> showAllEmployees(@RequestBody List<Long> searchIdList) {
+        List<EmployeeOneDTO> employees = employeeService.findWorkerAll(searchIdList);
+        return ResponseEntity.status(HttpStatus.OK).body(employees);
+    }
+
 }

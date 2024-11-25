@@ -31,5 +31,7 @@ public interface EmployeeService {
     // 사원 권한 조회
     ResponseEntity<Object> getAdminPermissionEmployee(Long companyId);
 
+    List<EmployeeOneDTO> findWorkerAll(List<Long> searchIdList);
+
     //void softDeleteEmployee(Long id);
 }

@@ -154,8 +154,6 @@ public class AttendanceServiceImpl implements AttendanceService {
         dto.setCheckInTime(attendanceRecords.getCheckInTime());
         dto.setCheckOutTime(attendanceRecords.getCheckOutTime());
         dto.setStatus(attendanceRecords.getStatus());
-
-
         return Optional.of(dto);
     }
 
@@ -184,5 +182,14 @@ public class AttendanceServiceImpl implements AttendanceService {
         }
     }
 
+    @Override
+    public List<EmployeeAttendanceDTO> getEmployeeAttendanceList(Long searchEmployeeId) {
+        try {
+            return attendanceRepository.findAttendanceList(searchEmployeeId);
+        }
+        catch (Exception e){
+            throw new RuntimeException(e.getMessage());
+        }
+    }
 }
 

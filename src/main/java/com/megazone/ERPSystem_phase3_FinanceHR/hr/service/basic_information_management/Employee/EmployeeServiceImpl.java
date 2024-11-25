@@ -173,6 +173,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         return ResponseEntity.ok(company.getAdminUsername());
     }
 
+
     public EmployeeFindDTO getEmployeeDTO(Long id) {
         Employee employee = employeeRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("사원을 찾을 수 없습니다"));
@@ -525,4 +526,9 @@ public class EmployeeServiceImpl implements EmployeeService {
         return newEmployeeNumber;  // 예: "240914001", "240914002"
     }
 
+    @Override
+    public List<EmployeeOneDTO> findWorkerAll(List<Long> searchId) {
+        List<EmployeeOneDTO> employeeDTOS = employeeRepository.findWorkerAll(searchId);
+        return employeeDTOS;
+    }
 }

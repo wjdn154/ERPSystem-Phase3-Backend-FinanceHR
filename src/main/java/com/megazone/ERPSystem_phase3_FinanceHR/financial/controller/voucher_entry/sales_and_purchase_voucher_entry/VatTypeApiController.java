@@ -88,4 +88,15 @@ public class VatTypeApiController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e);
         }
     }
+
+    @PostMapping("api/financial/vatType/vatType/getAll")
+    public ResponseEntity<Object> vatTypeGetAll(@RequestBody List<Long> vatTypeIdList) {
+        try {
+            List<VatTypeShowDTO> vatTypeList = vatTypeService.vatTypeGetAll(vatTypeIdList);
+            return ResponseEntity.status(HttpStatus.OK).body(vatTypeList);
+        }
+        catch(RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e);
+        }
+    }
 }
