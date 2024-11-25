@@ -28,7 +28,6 @@ public class EmployeeOneDTO {
     private LocalDate hireDate;
     private boolean isHouseholdHead;
     private String profilePicture;
-
     private Long departmentId;
     private String departmentCode;
     private String departmentName; // 부서 이름
