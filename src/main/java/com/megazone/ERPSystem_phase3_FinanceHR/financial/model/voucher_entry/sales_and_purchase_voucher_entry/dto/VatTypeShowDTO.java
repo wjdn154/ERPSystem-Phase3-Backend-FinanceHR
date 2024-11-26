@@ -8,6 +8,7 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class VatTypeShowDTO {
+    private Long vatTypeId;
     private String vatTypeCode;
     private String vatTypeName;
     private String description;
@@ -15,6 +16,7 @@ public class VatTypeShowDTO {
 
     public static VatTypeShowDTO create(VatType vatType) {
         return new VatTypeShowDTO(
+                vatType.getId(),
                 vatType.getCode(),
                 vatType.getVatName(),
                 vatType.getDescription(),

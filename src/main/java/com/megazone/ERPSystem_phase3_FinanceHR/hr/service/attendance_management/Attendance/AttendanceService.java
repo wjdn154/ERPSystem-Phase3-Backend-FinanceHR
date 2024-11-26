@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface AttendanceService {
+    List<EmployeeAttendanceDTO> getEmployeeAttendanceList(Long searchEmployeeId);
     //List<Attendance> getAttendanceByEmployeeId(Long employeeId);
 
     Optional<EmployeeAttendanceDTO> getAttendanceRecords(Long id);

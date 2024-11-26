@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -31,7 +32,6 @@ public class AttendanceController {
         }catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("근태등록 실패 사유 : " + e.getMessage());
         }
-
     }
 
     // 특정 사원의 출퇴근 기록 조회
@@ -79,6 +79,17 @@ public class AttendanceController {
             }
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("근태 수정 실패 사유 : " + e.getMessage());
+        }
+    }
+
+    @PostMapping("/employee/recordsAll")
+    public ResponseEntity<Object> getEmployeeAttendanceRecords(@RequestBody Map<String,Long> requestId){
+        Long searchEmployeeId = requestId.get("employeeId");
+        try {
+            List<EmployeeAttendanceDTO> attendanceList = attendanceService.getEmployeeAttendanceList(searchEmployeeId);
+            return ResponseEntity.status(HttpStatus.OK).body(attendanceList);
+        }catch(Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
 }

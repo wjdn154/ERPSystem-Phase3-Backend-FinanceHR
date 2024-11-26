@@ -9,6 +9,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @Transactional
@@ -40,5 +42,11 @@ public class VatTypeServiceImpl implements VatTypeService {
     public VatTypeShowDTO vatTypeGet(Long vatTypeId) {
         return VatTypeShowDTO.create(vatTypeRepository.findById(vatTypeId).orElseThrow(
                 () -> new RuntimeException("해당하는 부가세 유형이 없습니다.")));
+    }
+
+    @Override
+    public List<VatTypeShowDTO> vatTypeGetAll(List<Long> vatTypeIdList) {
+        List<VatTypeShowDTO> vatTypeShowDTOList = vatTypeRepository.getVatTypeAll(vatTypeIdList);
+        return vatTypeShowDTOList;
     }
 }
