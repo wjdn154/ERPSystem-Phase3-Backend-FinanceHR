@@ -55,6 +55,17 @@ public class NotificationServiceImpl implements NotificationService {
             emitters.remove(key);
         });
 
+        ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
+        executor.scheduleAtFixedRate(() -> {
+            try {
+                emitter.send(SseEmitter.event().data("keep-alive"));
+            } catch (Exception e) {
+                System.out.println(key + ", Keep-Alive 이벤트 전송 실패: " + e.getMessage());
+                emitters.remove(key);
+                executor.shutdown();
+            }
+        }, 0, 15, TimeUnit.SECONDS); // 15초 간격으로 전송
+
         return emitter;
     }
 
