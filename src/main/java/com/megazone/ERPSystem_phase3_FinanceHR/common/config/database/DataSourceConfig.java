@@ -36,7 +36,7 @@ public class DataSourceConfig {
 //        dataSource.setJdbcUrl(credentials.getUrl());
 //        System.out.println("credentials.getUrl() = " + credentials.getUrl());
 //        dataSource.setUsername(credentials.getUsername());
-//        dataSource.setPassword(credentials.getPassword());
+//        dataSource.setPassword(credentials.getPassword());//
         HikariDataSource dataSource = new HikariDataSource();
         dataSource.setJdbcUrl("jdbc:mysql://localhost:3396/PUBLIC?useSSL=false&serverTimezone=Asia/Seoul");
         dataSource.setUsername("root");
