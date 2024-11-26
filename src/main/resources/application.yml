@@ -110,3 +110,7 @@ logging:
 #    org.hibernate.SQL: DEBUG
   pattern:
     console: "%d{yyyy-MM-dd HH:mm:ss} %-5level %highlight(%-5level) %logger{36} - %msg%n"
+
+server:
+  http2:
+    enabled: true
