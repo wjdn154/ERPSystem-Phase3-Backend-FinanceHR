@@ -1,4 +1,4 @@
-package com.megazone.ERPSystem_phase3_FinanceHR.financial.model.basic_information_management.company.dto;
+package com.megazone.ERPSystem_phase3_FinanceHR.financial.model.basic_information_management.bank_account.dto;
 
 import com.megazone.ERPSystem_phase3_FinanceHR.financial.model.common.Contact;
 import lombok.AllArgsConstructor;

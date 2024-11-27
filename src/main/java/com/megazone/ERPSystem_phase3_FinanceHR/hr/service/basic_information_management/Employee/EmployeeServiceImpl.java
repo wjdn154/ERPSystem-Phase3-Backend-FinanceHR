@@ -1,12 +1,13 @@
 package com.megazone.ERPSystem_phase3_FinanceHR.hr.service.basic_information_management.Employee;
 
-import com.megazone.ERPSystem_phase3_FinanceHR.Integrated.model.dashboard.RecentActivity;
+import com.megazone.ERPSystem_phase3_FinanceHR.Integrated.model.dashboard.dto.RecentActivityEntryDTO;
 import com.megazone.ERPSystem_phase3_FinanceHR.Integrated.model.dashboard.enums.ActivityType;
+import com.megazone.ERPSystem_phase3_FinanceHR.Integrated.model.notification.dto.UserNotificationCreateAndSendDTO;
 import com.megazone.ERPSystem_phase3_FinanceHR.Integrated.model.notification.enums.ModuleType;
 import com.megazone.ERPSystem_phase3_FinanceHR.Integrated.model.notification.enums.NotificationType;
 import com.megazone.ERPSystem_phase3_FinanceHR.Integrated.model.notification.enums.PermissionType;
-import com.megazone.ERPSystem_phase3_FinanceHR.Integrated.repository.dashboard.RecentActivityRepository;
-import com.megazone.ERPSystem_phase3_FinanceHR.Integrated.service.notification.NotificationService;
+import com.megazone.ERPSystem_phase3_FinanceHR.Integrated.model.service.IntegratedService;
+import com.megazone.ERPSystem_phase3_FinanceHR.Integrated.model.service.NotificationService;
 import com.megazone.ERPSystem_phase3_FinanceHR.financial.model.basic_information_management.company.Company;
 import com.megazone.ERPSystem_phase3_FinanceHR.financial.model.common.Bank;
 import com.megazone.ERPSystem_phase3_FinanceHR.financial.repository.basic_information_management.company.CompanyRepository;
@@ -54,7 +55,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     private final AttendanceRepository attendanceRepository;
     private final BankRepository bankRepository;
     private final EmployeeImageService employeeImageService;
-    private final RecentActivityRepository recentActivityRepository;
+    private final IntegratedService integratedService;
     private final NotificationService notificationService;
 
     // 이미지가 저장된 경로 (src/main/resources/static/uploads/)
@@ -288,18 +289,16 @@ public class EmployeeServiceImpl implements EmployeeService {
             // 3. 엔티티 저장
             Employee updatedEmployee = employeeRepository.save(employee);
 
-        recentActivityRepository.save(RecentActivity.builder()
-                .activityDescription("[" + updatedEmployee.getEmployeeNumber() + "]" + updatedEmployee.getLastName() + updatedEmployee.getFirstName()+"사원 정보 수정")
-                .activityType(ActivityType.HR)
-                .activityTime(LocalDateTime.now())
-                .build());
-
-        notificationService.createAndSendNotification(
-                ModuleType.HR,
-                PermissionType.ADMIN,
-                "[" + updatedEmployee.getEmployeeNumber() + "]" + updatedEmployee.getLastName() + updatedEmployee.getFirstName()+"사원 정보 수정",
-                NotificationType.UPDATE_EMPLOYEE);
-
+        integratedService.recentActivitySave(
+                RecentActivityEntryDTO.create(
+                        "[" + updatedEmployee.getEmployeeNumber() + "]" + updatedEmployee.getLastName() + updatedEmployee.getFirstName()+"사원 정보 수정",
+                        ActivityType.HR));
+        notificationService.createAndSend(
+                UserNotificationCreateAndSendDTO.create(
+                        ModuleType.HR,
+                        PermissionType.ADMIN,
+                        "[" + updatedEmployee.getEmployeeNumber() + "]" + updatedEmployee.getLastName() + updatedEmployee.getFirstName()+"사원 정보 수정",
+                        NotificationType.UPDATE_EMPLOYEE));
 
 
             // 4. DTO로 변환하여 반환
@@ -408,17 +407,16 @@ public class EmployeeServiceImpl implements EmployeeService {
 // 사원 정보 저장
         Employee savedEmployee = employeeRepository.save(employee);
 
-        recentActivityRepository.save(RecentActivity.builder()
-                .activityDescription("[" + savedEmployee.getEmployeeNumber() + "]" + savedEmployee.getLastName() + savedEmployee.getFirstName()+"사원 정보 등록")
-                .activityType(ActivityType.HR)
-                .activityTime(LocalDateTime.now())
-                .build());
-
-        notificationService.createAndSendNotification(
-                ModuleType.HR,
-                PermissionType.ADMIN,
-                "[" + savedEmployee.getEmployeeNumber() + "]" + savedEmployee.getLastName() + savedEmployee.getFirstName()+"사원 정보 등록",
-                NotificationType.UPDATE_EMPLOYEE);
+        integratedService.recentActivitySave(
+                RecentActivityEntryDTO.create(
+                        "[" + savedEmployee.getEmployeeNumber() + "]" + savedEmployee.getLastName() + savedEmployee.getFirstName()+"사원 정보 등록",
+                        ActivityType.HR));
+        notificationService.createAndSend(
+                UserNotificationCreateAndSendDTO.create(
+                        ModuleType.HR,
+                        PermissionType.ADMIN,
+                        "[" + savedEmployee.getEmployeeNumber() + "]" + savedEmployee.getLastName() + savedEmployee.getFirstName()+"사원 정보 등록",
+                        NotificationType.UPDATE_EMPLOYEE));
 
         // 4. DTO로 변환하여 반환
         EmployeeShowToDTO savedEmployeeDTO = new EmployeeShowToDTO(

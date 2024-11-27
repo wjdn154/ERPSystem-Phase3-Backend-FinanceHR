@@ -1,12 +1,13 @@
 package com.megazone.ERPSystem_phase3_FinanceHR.hr.service.basic_information_management.Users;
 
-import com.megazone.ERPSystem_phase3_FinanceHR.Integrated.model.dashboard.RecentActivity;
+import com.megazone.ERPSystem_phase3_FinanceHR.Integrated.model.dashboard.dto.RecentActivityEntryDTO;
 import com.megazone.ERPSystem_phase3_FinanceHR.Integrated.model.dashboard.enums.ActivityType;
+import com.megazone.ERPSystem_phase3_FinanceHR.Integrated.model.notification.dto.UserNotificationCreateAndSendDTO;
 import com.megazone.ERPSystem_phase3_FinanceHR.Integrated.model.notification.enums.ModuleType;
 import com.megazone.ERPSystem_phase3_FinanceHR.Integrated.model.notification.enums.NotificationType;
 import com.megazone.ERPSystem_phase3_FinanceHR.Integrated.model.notification.enums.PermissionType;
-import com.megazone.ERPSystem_phase3_FinanceHR.Integrated.repository.dashboard.RecentActivityRepository;
-import com.megazone.ERPSystem_phase3_FinanceHR.Integrated.service.notification.NotificationService;
+import com.megazone.ERPSystem_phase3_FinanceHR.Integrated.model.service.IntegratedService;
+import com.megazone.ERPSystem_phase3_FinanceHR.Integrated.model.service.NotificationService;
 import com.megazone.ERPSystem_phase3_FinanceHR.common.config.multi_tenant.SchemaBasedMultiTenantConnectionProvider;
 import com.megazone.ERPSystem_phase3_FinanceHR.common.config.security.AuthRequest;
 import com.megazone.ERPSystem_phase3_FinanceHR.common.config.security.CustomUserDetails;
@@ -58,7 +59,7 @@ public class UsersServiceImpl implements UsersService{
     private final JdbcTemplate jdbcTemplate;
     private final JwtUtil jwtUtil;
     private final AuthenticationManager authenticationManager;
-    private final RecentActivityRepository recentActivityRepository;
+    private final IntegratedService integratedService;
     private final NotificationService notificationService;
 
 
@@ -174,19 +175,16 @@ public class UsersServiceImpl implements UsersService{
         user.setPermission(permission);
         Users savedUser = usersRepository.save(user);
 
-        recentActivityRepository.save(RecentActivity.builder()
-                .activityDescription(savedUser.getUserNickname() + "님의 권한이 변경되었습니다.")
-                .activityType(ActivityType.HR)
-                .activityTime(LocalDateTime.now())
-                .build());
-        notificationService.createAndSendNotification(
-                ModuleType.ALL,
-                PermissionType.ALL,
-                savedUser.getUserNickname() + "님의 권한이 변경되었습니다.",
-                NotificationType.CHANGE_PERMISSION
-        );
-
-
+        integratedService.recentActivitySave(
+                RecentActivityEntryDTO.create(
+                        savedUser.getUserNickname() + "님의 권한이 변경되었습니다.",
+                        ActivityType.HR));
+        notificationService.createAndSend(
+                UserNotificationCreateAndSendDTO.create(
+                        ModuleType.ALL,
+                        PermissionType.ALL,
+                        savedUser.getUserNickname() + "님의 권한이 변경되었습니다.",
+                        NotificationType.CHANGE_PERMISSION));
         return ResponseEntity.ok(modelMapper.map(savedUser.getPermission(), PermissionDTO.class));
     }
 

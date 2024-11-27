@@ -1,5 +1,6 @@
 package com.megazone.ERPSystem_phase3_FinanceHR.financial.controller.financial_statements_ledger;
 
+import com.megazone.ERPSystem_phase3_FinanceHR.financial.model.financial_statements.dto.IncomeStatementLedgerDashBoardDTO;
 import com.megazone.ERPSystem_phase3_FinanceHR.financial.model.financial_statements.dto.IncomeStatementLedgerShowDTO;
 import com.megazone.ERPSystem_phase3_FinanceHR.financial.model.financial_statements.dto.IncomeStatementSearchDTO;
 import com.megazone.ERPSystem_phase3_FinanceHR.financial.service.financial_statements_ledger.IncomeStatementService;
@@ -20,6 +21,12 @@ public class IncomeStatementController {
     @PostMapping("/api/financial/ledger/incomeStatement/show")
     public ResponseEntity<Object> show(@RequestBody IncomeStatementSearchDTO dto) {
         List<IncomeStatementLedgerShowDTO> result = incomeStatementService.show(dto);
+        return ResponseEntity.status(HttpStatus.OK).body(result);
+    }
+
+    @PostMapping("/api/financial/ledger/incomeStatement/dashboardShow")
+    public ResponseEntity<Object> show() {
+        IncomeStatementLedgerDashBoardDTO result = incomeStatementService.dashBoardShow();
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 

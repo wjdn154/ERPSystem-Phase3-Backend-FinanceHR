@@ -1,12 +1,13 @@
 package com.megazone.ERPSystem_phase3_FinanceHR.hr.service.basic_information_management.Transfer;
 
-import com.megazone.ERPSystem_phase3_FinanceHR.Integrated.model.dashboard.RecentActivity;
+import com.megazone.ERPSystem_phase3_FinanceHR.Integrated.model.dashboard.dto.RecentActivityEntryDTO;
 import com.megazone.ERPSystem_phase3_FinanceHR.Integrated.model.dashboard.enums.ActivityType;
+import com.megazone.ERPSystem_phase3_FinanceHR.Integrated.model.notification.dto.UserNotificationCreateAndSendDTO;
 import com.megazone.ERPSystem_phase3_FinanceHR.Integrated.model.notification.enums.ModuleType;
 import com.megazone.ERPSystem_phase3_FinanceHR.Integrated.model.notification.enums.NotificationType;
 import com.megazone.ERPSystem_phase3_FinanceHR.Integrated.model.notification.enums.PermissionType;
-import com.megazone.ERPSystem_phase3_FinanceHR.Integrated.repository.dashboard.RecentActivityRepository;
-import com.megazone.ERPSystem_phase3_FinanceHR.Integrated.service.notification.NotificationService;
+import com.megazone.ERPSystem_phase3_FinanceHR.Integrated.model.service.IntegratedService;
+import com.megazone.ERPSystem_phase3_FinanceHR.Integrated.model.service.NotificationService;
 import com.megazone.ERPSystem_phase3_FinanceHR.hr.model.basic_information_management.employee.Department;
 import com.megazone.ERPSystem_phase3_FinanceHR.hr.model.basic_information_management.employee.Employee;
 import com.megazone.ERPSystem_phase3_FinanceHR.hr.model.basic_information_management.employee.Transfer;
@@ -34,7 +35,7 @@ public class TransferServiceImpl implements TransferService {
     private final TransferRepository transferRepository;
     private final EmployeeRepository employeeRepository;
     private final DepartmentRepository departmentRepository;
-    private final RecentActivityRepository recentActivityRepository;
+    private final IntegratedService integratedService;
     private final NotificationService notificationService;
 
     @Override
@@ -68,18 +69,17 @@ public class TransferServiceImpl implements TransferService {
 
         // Transfer 저장
         Transfer savedTransfer = transferRepository.save(transfer);
+        integratedService.recentActivitySave(
+                RecentActivityEntryDTO.create(
+                        "["+ savedTransfer.getEmployee().getEmployeeNumber() + "]" + savedTransfer.getEmployee().getLastName() + savedTransfer.getEmployee().getFirstName() +" 사원의 발령 등록",
+                        ActivityType.HR));
 
-        recentActivityRepository.save(RecentActivity.builder()
-                .activityDescription("["+ savedTransfer.getEmployee().getEmployeeNumber() + "]" + savedTransfer.getEmployee().getLastName() + savedTransfer.getEmployee().getFirstName() +" 사원의 발령 등록")
-                .activityType(ActivityType.HR)
-                .activityTime(LocalDateTime.now())
-                .build());
-
-        notificationService.createAndSendNotification(
-                ModuleType.HR,
-                PermissionType.ADMIN,
-                "["+ savedTransfer.getEmployee().getEmployeeNumber() + "]" + savedTransfer.getEmployee().getLastName() + savedTransfer.getEmployee().getFirstName() +" 사원의 발령 등록",
-                NotificationType.CREATE_TRANSFER);
+        notificationService.createAndSend(
+                UserNotificationCreateAndSendDTO.create(
+                        ModuleType.HR,
+                        PermissionType.ADMIN,
+                        "["+ savedTransfer.getEmployee().getEmployeeNumber() + "]" + savedTransfer.getEmployee().getLastName() + savedTransfer.getEmployee().getFirstName() +" 사원의 발령 등록",
+                        NotificationType.CREATE_TRANSFER));
         
         TransferShowDTO transferShowDTO = new TransferShowDTO();
         transferShowDTO.setId(savedTransfer.getId());
@@ -135,17 +135,17 @@ public class TransferServiceImpl implements TransferService {
 
         Transfer updatedTransfer = transferRepository.save(transfer);
 
-        recentActivityRepository.save(RecentActivity.builder()
-                .activityDescription("["+ updatedTransfer.getEmployee().getEmployeeNumber() + "]" + updatedTransfer.getEmployee().getLastName() + updatedTransfer.getEmployee().getFirstName() +" 사원의 발령 수정")
-                .activityType(ActivityType.HR)
-                .activityTime(LocalDateTime.now())
-                .build());
+        integratedService.recentActivitySave(
+                RecentActivityEntryDTO.create(
+                        "["+ updatedTransfer.getEmployee().getEmployeeNumber() + "]" + updatedTransfer.getEmployee().getLastName() + updatedTransfer.getEmployee().getFirstName() +" 사원의 발령 수정",
+                        ActivityType.HR));
 
-        notificationService.createAndSendNotification(
-                ModuleType.HR,
-                PermissionType.ADMIN,
-                "["+ updatedTransfer.getEmployee().getEmployeeNumber() + "]" + updatedTransfer.getEmployee().getLastName() + updatedTransfer.getEmployee().getFirstName() +" 사원의 발령 수정",
-                NotificationType.UPDATE_TRANSFER);
+        notificationService.createAndSend(
+                UserNotificationCreateAndSendDTO.create(
+                        ModuleType.HR,
+                        PermissionType.ADMIN,
+                        "["+ updatedTransfer.getEmployee().getEmployeeNumber() + "]" + updatedTransfer.getEmployee().getLastName() + updatedTransfer.getEmployee().getFirstName() +" 사원의 발령 수정",
+                        NotificationType.UPDATE_TRANSFER));
         return TransferShowDTO.create(updatedTransfer);
     }
 }

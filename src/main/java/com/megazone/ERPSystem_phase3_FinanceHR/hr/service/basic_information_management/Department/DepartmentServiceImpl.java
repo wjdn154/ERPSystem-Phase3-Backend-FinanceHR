@@ -1,13 +1,14 @@
 package com.megazone.ERPSystem_phase3_FinanceHR.hr.service.basic_information_management.Department;
 
 
-import com.megazone.ERPSystem_phase3_FinanceHR.Integrated.model.dashboard.RecentActivity;
+import com.megazone.ERPSystem_phase3_FinanceHR.Integrated.model.dashboard.dto.RecentActivityEntryDTO;
 import com.megazone.ERPSystem_phase3_FinanceHR.Integrated.model.dashboard.enums.ActivityType;
+import com.megazone.ERPSystem_phase3_FinanceHR.Integrated.model.notification.dto.UserNotificationCreateAndSendDTO;
 import com.megazone.ERPSystem_phase3_FinanceHR.Integrated.model.notification.enums.ModuleType;
 import com.megazone.ERPSystem_phase3_FinanceHR.Integrated.model.notification.enums.NotificationType;
 import com.megazone.ERPSystem_phase3_FinanceHR.Integrated.model.notification.enums.PermissionType;
-import com.megazone.ERPSystem_phase3_FinanceHR.Integrated.repository.dashboard.RecentActivityRepository;
-import com.megazone.ERPSystem_phase3_FinanceHR.Integrated.service.notification.NotificationService;
+import com.megazone.ERPSystem_phase3_FinanceHR.Integrated.model.service.IntegratedService;
+import com.megazone.ERPSystem_phase3_FinanceHR.Integrated.model.service.NotificationService;
 import com.megazone.ERPSystem_phase3_FinanceHR.hr.model.basic_information_management.employee.Department;
 import com.megazone.ERPSystem_phase3_FinanceHR.hr.model.basic_information_management.employee.Employee;
 import com.megazone.ERPSystem_phase3_FinanceHR.hr.model.basic_information_management.employee.JobTitle;
@@ -35,7 +36,7 @@ public class DepartmentServiceImpl implements DepartmentService {
     private final EmployeeRepository employeeRepository;
     private final PositionRepository positionRepository;
     private final JobTitleRepository jobTitleRepository;
-    private final RecentActivityRepository recentActivityRepository;
+    private final IntegratedService integratedService;
     private final NotificationService notificationService;
 
     // 부서 리스트 조회
@@ -117,17 +118,16 @@ public class DepartmentServiceImpl implements DepartmentService {
         // 엔티티를 저장
         Department savedDepartment = departmentRepository.save(department);
 
-        recentActivityRepository.save(RecentActivity.builder()
-                .activityDescription("["+ savedDepartment.getDepartmentCode() + "]" + savedDepartment.getDepartmentName()+" 부서 등록")
-                .activityType(ActivityType.HR)
-                .activityTime(LocalDateTime.now())
-                .build());
-
-        notificationService.createAndSendNotification(
-                ModuleType.HR,
-                PermissionType.ADMIN,
-                "["+ savedDepartment.getDepartmentCode() + "]" + savedDepartment.getDepartmentName()+" 부서 등록",
-                NotificationType.CREATE_DEPARTMENT);
+        integratedService.recentActivitySave(
+                RecentActivityEntryDTO.create(
+                        "["+ savedDepartment.getDepartmentCode() + "]" + savedDepartment.getDepartmentName()+" 부서 등록",
+                        ActivityType.HR));
+        notificationService.createAndSend(
+                UserNotificationCreateAndSendDTO.create(
+                        ModuleType.HR,
+                        PermissionType.ADMIN,
+                        "["+ savedDepartment.getDepartmentCode() + "]" + savedDepartment.getDepartmentName()+" 부서 등록",
+                        NotificationType.CREATE_DEPARTMENT));
 
         // 저장된 엔티티의 ID를 포함한 DTO를 반환
         return new DepartmentCreateDTO(

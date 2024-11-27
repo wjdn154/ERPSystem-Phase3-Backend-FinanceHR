@@ -1,12 +1,13 @@
 package com.megazone.ERPSystem_phase3_FinanceHR.financial.service.voucher_entry.sales_and_purchase_voucher_entry;
 
-import com.megazone.ERPSystem_phase3_FinanceHR.Integrated.model.dashboard.RecentActivity;
+import com.megazone.ERPSystem_phase3_FinanceHR.Integrated.model.dashboard.dto.RecentActivityEntryDTO;
 import com.megazone.ERPSystem_phase3_FinanceHR.Integrated.model.dashboard.enums.ActivityType;
+import com.megazone.ERPSystem_phase3_FinanceHR.Integrated.model.notification.dto.UserNotificationCreateAndSendDTO;
 import com.megazone.ERPSystem_phase3_FinanceHR.Integrated.model.notification.enums.ModuleType;
 import com.megazone.ERPSystem_phase3_FinanceHR.Integrated.model.notification.enums.NotificationType;
 import com.megazone.ERPSystem_phase3_FinanceHR.Integrated.model.notification.enums.PermissionType;
-import com.megazone.ERPSystem_phase3_FinanceHR.Integrated.repository.dashboard.RecentActivityRepository;
-import com.megazone.ERPSystem_phase3_FinanceHR.Integrated.service.notification.NotificationService;
+import com.megazone.ERPSystem_phase3_FinanceHR.Integrated.model.service.IntegratedService;
+import com.megazone.ERPSystem_phase3_FinanceHR.Integrated.model.service.NotificationService;
 import com.megazone.ERPSystem_phase3_FinanceHR.financial.model.voucher_entry.general_voucher_entry.ResolvedVoucher;
 import com.megazone.ERPSystem_phase3_FinanceHR.financial.model.voucher_entry.general_voucher_entry.enums.VoucherKind;
 import com.megazone.ERPSystem_phase3_FinanceHR.financial.model.voucher_entry.sales_and_purchase_voucher_entry.ResolvedSaleAndPurchaseVoucher;
@@ -31,8 +32,9 @@ import java.util.function.Function;
 public class ResolvedSaleAndPurchaseVoucherServiceImpl implements ResolvedSaleAndPurchaseVoucherService {
 
     private final ResolvedSaleAndPurchaseVoucherRepository resolvedSaleAndPurchaseVoucherRepository;
-    private final RecentActivityRepository recentActivityRepository;
+    private final IntegratedService integratedService;
     private final NotificationService notificationService;
+
     @Override
     public List<ResolvedSaleAndPurchaseVoucher> searchAllVoucher(LocalDate date) {
         List<ResolvedSaleAndPurchaseVoucher> voucherList = new ArrayList<ResolvedSaleAndPurchaseVoucher>();
@@ -97,16 +99,16 @@ public class ResolvedSaleAndPurchaseVoucherServiceImpl implements ResolvedSaleAn
                 dto.getSearchVoucherNumList().forEach((voucherNumber) -> {
                     resolvedSaleAndPurchaseVoucherRepository.deleteByVoucherNumberAndVoucherDate(
                             voucherNumber, dto.getSearchDate());});
-                recentActivityRepository.save(RecentActivity.builder()
-                        .activityDescription("매출매입전표 " + dto.getSearchVoucherNumList().size() + "건 삭제")
-                        .activityType(ActivityType.FINANCE)
-                        .activityTime(LocalDateTime.now())
-                        .build());
-                notificationService.createAndSendNotification(
-                        ModuleType.FINANCE,
-                        PermissionType.USER,
-                        "매출매입전표 " + dto.getSearchVoucherNumList().size() + "건 삭제",
-                        NotificationType.DELETE_RESOLVED_SALEANDPURCHASE_VOUCHER);
+                integratedService.recentActivitySave(
+                        RecentActivityEntryDTO.create(
+                                "매출매입전표 " + dto.getSearchVoucherNumList().size() + "건 삭제",
+                                ActivityType.FINANCE));
+                notificationService.createAndSend(
+                        UserNotificationCreateAndSendDTO.create(
+                                ModuleType.FINANCE,
+                                PermissionType.USER,
+                                "매출매입전표 " + dto.getSearchVoucherNumList().size() + "건 삭제",
+                                NotificationType.DELETE_RESOLVED_SALEANDPURCHASE_VOUCHER));
             }
         }
         catch (Exception e) {

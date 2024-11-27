@@ -1,12 +1,13 @@
 package com.megazone.ERPSystem_phase3_FinanceHR.financial.service.voucher_entry.general_voucher_entry;
 
-import com.megazone.ERPSystem_phase3_FinanceHR.Integrated.model.dashboard.RecentActivity;
+import com.megazone.ERPSystem_phase3_FinanceHR.Integrated.model.dashboard.dto.RecentActivityEntryDTO;
 import com.megazone.ERPSystem_phase3_FinanceHR.Integrated.model.dashboard.enums.ActivityType;
+import com.megazone.ERPSystem_phase3_FinanceHR.Integrated.model.notification.dto.UserNotificationCreateAndSendDTO;
 import com.megazone.ERPSystem_phase3_FinanceHR.Integrated.model.notification.enums.ModuleType;
 import com.megazone.ERPSystem_phase3_FinanceHR.Integrated.model.notification.enums.NotificationType;
 import com.megazone.ERPSystem_phase3_FinanceHR.Integrated.model.notification.enums.PermissionType;
-import com.megazone.ERPSystem_phase3_FinanceHR.Integrated.repository.dashboard.RecentActivityRepository;
-import com.megazone.ERPSystem_phase3_FinanceHR.Integrated.service.notification.NotificationService;
+import com.megazone.ERPSystem_phase3_FinanceHR.Integrated.model.service.IntegratedService;
+import com.megazone.ERPSystem_phase3_FinanceHR.Integrated.model.service.NotificationService;
 import com.megazone.ERPSystem_phase3_FinanceHR.financial.model.voucher_entry.general_voucher_entry.dto.ResolvedVoucherDeleteDTO;
 import com.megazone.ERPSystem_phase3_FinanceHR.financial.model.voucher_entry.general_voucher_entry.ResolvedVoucher;
 import com.megazone.ERPSystem_phase3_FinanceHR.financial.model.voucher_entry.general_voucher_entry.UnresolvedVoucher;
@@ -28,7 +29,7 @@ import java.util.function.Function;
 @Transactional
 public class ResolvedVoucherServiceImpl implements ResolvedVoucherService {
     private final ResolvedVoucherRepository resolvedVoucherRepository;
-    private final RecentActivityRepository recentActivityRepository;
+    private final IntegratedService integratedService;
     private final NotificationService notificationService;
 
     /**
@@ -128,16 +129,16 @@ public class ResolvedVoucherServiceImpl implements ResolvedVoucherService {
                     throw new NoSuchElementException("검색조건에 해당하는 전표가 없습니다.");
                 }
 
-                recentActivityRepository.save(RecentActivity.builder()
-                        .activityDescription("승인된 일반전표 " +  deleteVouchers.size() + "건 삭제")
-                        .activityType(ActivityType.FINANCE)
-                        .activityTime(LocalDateTime.now())
-                        .build());
-                notificationService.createAndSendNotification(
-                        ModuleType.FINANCE,
-                        PermissionType.USER,
-                        "승인된 일반전표 " +  deleteVouchers.size() + "건 삭제",
-                        NotificationType.DELETE_RESOLVEDVOUCHER);
+                integratedService.recentActivitySave(
+                        RecentActivityEntryDTO.create(
+                                "승인된 일반전표 " +  deleteVouchers.size() + "건 삭제",
+                                ActivityType.FINANCE));
+                notificationService.createAndSend(
+                        UserNotificationCreateAndSendDTO.create(
+                                ModuleType.FINANCE,
+                                PermissionType.USER,
+                                "승인된 일반전표 " +  deleteVouchers.size() + "건 삭제",
+                                NotificationType.DELETE_RESOLVEDVOUCHER));
 
             }
         }
