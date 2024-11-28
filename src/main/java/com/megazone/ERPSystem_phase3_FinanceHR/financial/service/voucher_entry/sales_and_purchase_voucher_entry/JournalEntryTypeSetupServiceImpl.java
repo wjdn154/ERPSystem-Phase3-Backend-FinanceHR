@@ -65,18 +65,17 @@ public class JournalEntryTypeSetupServiceImpl implements JournalEntryTypeSetupSe
 
             // 엔티티 저장
             journalEntryTypeSetupRepository.save(journalEntryTypeSetup);
-
-            integratedService.recentActivitySave(
-                    RecentActivityEntryDTO.create(
-                            "분개유형 수정",
-                            ActivityType.FINANCE));
-            notificationService.createAndSend(
-                    UserNotificationCreateAndSendDTO.create(
-                            ModuleType.FINANCE,
-                            PermissionType.USER,
-                            "분개유형 수정",
-                            NotificationType.JOURNAL_ENTRY_TYPESET));
         });
+        integratedService.recentActivitySave(
+                RecentActivityEntryDTO.create(
+                        "분개유형 수정",
+                        ActivityType.FINANCE));
+        notificationService.createAndSend(
+                UserNotificationCreateAndSendDTO.create(
+                        ModuleType.FINANCE,
+                        PermissionType.USER,
+                        "분개유형 수정",
+                        NotificationType.JOURNAL_ENTRY_TYPESET));
         return journalEntryTypeSetupRepository.findAll().stream().map(JournalEntryTypeSetupShowDTO::create).toList();
     }
 }
