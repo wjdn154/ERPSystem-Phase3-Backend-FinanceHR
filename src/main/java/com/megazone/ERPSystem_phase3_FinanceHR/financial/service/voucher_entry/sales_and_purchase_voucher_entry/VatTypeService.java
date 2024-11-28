@@ -12,6 +12,5 @@ public interface VatTypeService {
     BigDecimal vatAmountCalculate(VatAmountWithSupplyAmountDTO dto);
 
     Long vatTypeGetId(String vatTypeId);
-    VatTypeShowDTO vatTypeGet(Long vatTypeId);
-    List<VatTypeShowDTO> vatTypeGetAll(List<Long> vatTypeIdList);
+//    List<VatTypeShowDTO> vatTypeGetAll(List<Long> vatTypeIdList);
 }

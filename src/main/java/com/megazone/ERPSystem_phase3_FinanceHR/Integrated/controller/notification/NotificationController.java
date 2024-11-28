@@ -1,8 +1,10 @@
 package com.megazone.ERPSystem_phase3_FinanceHR.Integrated.controller.notification;
 
+import com.megazone.ERPSystem_phase3_FinanceHR.Integrated.model.notification.Notification;
 import com.megazone.ERPSystem_phase3_FinanceHR.Integrated.model.notification.dto.UserNotificationSearchDTO;
 import com.megazone.ERPSystem_phase3_FinanceHR.Integrated.model.notification.dto.UserSubscriptionDTO;
 import com.megazone.ERPSystem_phase3_FinanceHR.Integrated.model.notification.enums.ModuleType;
+import com.megazone.ERPSystem_phase3_FinanceHR.Integrated.model.notification.enums.NotificationType;
 import com.megazone.ERPSystem_phase3_FinanceHR.Integrated.model.notification.enums.PermissionType;
 import com.megazone.ERPSystem_phase3_FinanceHR.Integrated.service.notification.NotificationService;
 import lombok.RequiredArgsConstructor;

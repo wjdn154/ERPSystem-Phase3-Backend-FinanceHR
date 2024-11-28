@@ -99,6 +99,20 @@ spring:
 
         - classpath:initial-database/hr/payment/salary.sql
 
+  kafka:
+    bootstrap-servers: kafka-cluster-kafka-bootstrap.kafka.svc.cluster.local:9092
+    properties:
+      security.protocol: PLAINTEXT
+    consumer:
+      group-id: finance-hr-group
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      auto-offset-reset: earliest
+      properties:
+        spring.json.trusted.packages: "*"
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
 
 logging:
   level:
@@ -108,9 +122,7 @@ logging:
 #    org.flywaydb: DEBUG
 #    org.hibernate.boot.model.naming: TRACE
 #    org.hibernate.SQL: DEBUG
+#    org.apache.kafka: DEBUG
+#    org.springframework.kafka: DEBUG
   pattern:
     console: "%d{yyyy-MM-dd HH:mm:ss} %-5level %highlight(%-5level) %logger{36} - %msg%n"
-
-server:
-  http2:
-    enabled: true
