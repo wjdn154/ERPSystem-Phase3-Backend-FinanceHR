@@ -96,6 +96,7 @@ public class TransferServiceImpl implements TransferService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<TransferShowDTO> findAllTransfers() {
         return transferRepository.findAll().stream()
                 .map(TransferShowDTO::create)
@@ -103,6 +104,7 @@ public class TransferServiceImpl implements TransferService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Optional<TransferShowDTO> findTransferById(Long id) {
         return transferRepository.findById(id)
                 .map(TransferShowDTO::create); // TransferShowDTO를 반환하도록 변환

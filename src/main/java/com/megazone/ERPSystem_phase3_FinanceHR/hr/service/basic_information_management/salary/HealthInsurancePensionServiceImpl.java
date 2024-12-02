@@ -21,6 +21,7 @@ public class HealthInsurancePensionServiceImpl implements HealthInsurancePension
     private final PositionSalaryStepRepository positionSalaryStepRepository;
 
     @Override
+    @Transactional(readOnly = true)
     public BigDecimal calculator(InsurancePensionCalculatorDTO dto) {
 
         BigDecimal salaryAmount =  positionSalaryStepRepository.getSalaryAmount(dto.getPositionId(),dto.getSalaryStepId());
@@ -44,6 +45,7 @@ public class HealthInsurancePensionServiceImpl implements HealthInsurancePension
     }
 
     @Override
+    @Transactional(readOnly = true)
     public BigDecimal calculator(BigDecimal amount) {
         HealthInsurancePension healthInsurancePension = healthInsurancePensionRepository.findFirstByEndDateIsNull().orElseThrow(
                 () -> new NoSuchElementException("해당하는 건강보험 데이터가 없습니다."));
@@ -59,6 +61,7 @@ public class HealthInsurancePensionServiceImpl implements HealthInsurancePension
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<HealthInsurancePensionShowDTO> showAll() {
         List<HealthInsurancePension> list = healthInsurancePensionRepository.findAll();
 

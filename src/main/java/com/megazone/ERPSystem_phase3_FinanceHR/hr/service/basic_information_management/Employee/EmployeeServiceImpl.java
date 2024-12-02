@@ -12,6 +12,7 @@ import com.megazone.ERPSystem_phase3_FinanceHR.financial.model.basic_information
 import com.megazone.ERPSystem_phase3_FinanceHR.financial.model.common.Bank;
 import com.megazone.ERPSystem_phase3_FinanceHR.financial.repository.basic_information_management.company.CompanyRepository;
 import com.megazone.ERPSystem_phase3_FinanceHR.financial.repository.common.BankRepository;
+import com.megazone.ERPSystem_phase3_FinanceHR.hr.kafka.producer.EmployeeProducer;
 import com.megazone.ERPSystem_phase3_FinanceHR.hr.model.basic_information_management.employee.*;
 import com.megazone.ERPSystem_phase3_FinanceHR.hr.model.basic_information_management.employee.dto.*;
 import com.megazone.ERPSystem_phase3_FinanceHR.hr.repository.attendance_management.Attendance.AttendanceRepository;
@@ -23,10 +24,10 @@ import com.megazone.ERPSystem_phase3_FinanceHR.hr.repository.basic_information_m
 import com.megazone.ERPSystem_phase3_FinanceHR.hr.repository.basic_information_management.Position.PositionRepository;
 import com.megazone.ERPSystem_phase3_FinanceHR.hr.service.basic_information_management.EmployeeImage.EmployeeImageService;
 import jakarta.persistence.EntityNotFoundException;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
@@ -37,6 +38,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -57,6 +59,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     private final EmployeeImageService employeeImageService;
     private final IntegratedService integratedService;
     private final NotificationService notificationService;
+    private final EmployeeProducer employeeProducer;
 
     // 이미지가 저장된 경로 (src/main/resources/static/uploads/)
     private static final String UPLOAD_DIR = "src/main/resources/static";
@@ -66,6 +69,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     // 사원 리스트 조회
     @Override
+    @Transactional(readOnly = true)
     public List<EmployeeShowDTO> findAllUsers() {
         //엔티티 dto로 변환
         return employeeRepository.findAllByUser().stream()
@@ -89,6 +93,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<EmployeeShowDTO> findAllEmployees() {
         //엔티티 dto로 변환
         return employeeRepository.findAll().stream()
@@ -113,6 +118,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     // 사원 상세 조회
     @Override
+    @Transactional(readOnly = true)
     public Optional<EmployeeOneDTO> findEmployeeById(Long id) {
         //엔티티 조회
         Employee employee = employeeRepository.findById(id)
@@ -168,6 +174,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
 
     @Override
+    @Transactional(readOnly = true)
     public ResponseEntity<Object> getAdminPermissionEmployee(Long companyId) {
         Company company = companyRepository.findById(companyId).orElse(null);
         if (company == null) return ResponseEntity.badRequest().body("회사를 찾을 수 없습니다.");
@@ -316,6 +323,7 @@ public class EmployeeServiceImpl implements EmployeeService {
                     updatedEmployee.getHireDate(),
                     updatedEmployee.isHouseholdHead(),
                     updatedEmployee.getImagePath(),
+                    updatedEmployee.getDepartment() != null ? updatedEmployee.getDepartment().getId() : null,
                     updatedEmployee.getDepartment() != null ? updatedEmployee.getDepartment().getDepartmentName() : null,
                     updatedEmployee.getDepartment() != null ? updatedEmployee.getDepartment().getDepartmentCode() : null,
                     updatedEmployee.getPosition() != null ? updatedEmployee.getPosition().getPositionName() : null,
@@ -325,6 +333,7 @@ public class EmployeeServiceImpl implements EmployeeService {
                     updatedEmployee.getBankAccount() != null ? updatedEmployee.getBankAccount().getBank().getName() : null,  // 은행 이름 추가
                     updatedEmployee.getBankAccount() != null ? updatedEmployee.getBankAccount().getAccountNumber() : null   // 계좌번호 추가
             );
+        employeeProducer.employeeUpdateProducer(updatedEmployeeDTO);
             return Optional.of(updatedEmployeeDTO);
 
 
@@ -433,6 +442,7 @@ public class EmployeeServiceImpl implements EmployeeService {
                 savedEmployee.getHireDate(),
                 savedEmployee.isHouseholdHead(),
                 savedEmployee.getImagePath(),
+                savedEmployee.getDepartment() != null ? savedEmployee.getDepartment().getId() : null,
                 savedEmployee.getDepartment() != null ? savedEmployee.getDepartment().getDepartmentName() : null,
                 savedEmployee.getDepartment() != null ? savedEmployee.getDepartment().getDepartmentCode() : null,
                 savedEmployee.getPosition() != null ? savedEmployee.getPosition().getPositionName() : null,
@@ -444,6 +454,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         );
 
 // 저장된 정보를 DTO로 변환하여 반환
+        employeeProducer.employeeSaveProducer(savedEmployeeDTO);
         return Optional.of(savedEmployeeDTO);
     }
 
@@ -525,8 +536,10 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<EmployeeOneDTO> findWorkerAll(List<Long> searchId) {
         List<EmployeeOneDTO> employeeDTOS = employeeRepository.findWorkerAll(searchId);
         return employeeDTOS;
     }
+
 }

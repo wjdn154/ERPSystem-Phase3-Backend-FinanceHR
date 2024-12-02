@@ -29,10 +29,11 @@ import com.megazone.ERPSystem_phase3_FinanceHR.financial.service.voucher_entry.g
 import com.megazone.ERPSystem_phase3_FinanceHR.hr.model.basic_information_management.employee.Employee;
 import com.megazone.ERPSystem_phase3_FinanceHR.hr.model.basic_information_management.employee.enums.UserPermission;
 import com.megazone.ERPSystem_phase3_FinanceHR.hr.repository.basic_information_management.Employee.EmployeeRepository;
-import jakarta.transaction.Transactional;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -324,6 +325,7 @@ public class UnresolvedSaleAndPurchaseVoucherServiceImpl implements UnresolvedSa
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<UnresolvedSaleAndPurchaseVoucher> searchAllVoucher(LocalDate date) {
 
         List<UnresolvedSaleAndPurchaseVoucher> voucherList = new ArrayList<UnresolvedSaleAndPurchaseVoucher>();
@@ -379,6 +381,7 @@ public class UnresolvedSaleAndPurchaseVoucherServiceImpl implements UnresolvedSa
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<UnresolvedVoucher> searchVoucher(Long voucherId) {
         return unresolvedSaleAndPurchaseVoucherRepository.findById(voucherId).get().getUnresolvedVouchers();
     }
@@ -446,6 +449,7 @@ public class UnresolvedSaleAndPurchaseVoucherServiceImpl implements UnresolvedSa
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<UnresolvedSaleAndPurchaseVoucherShowDTO> ApprovalSearch(LocalDate date) {
 
         List<UnresolvedSaleAndPurchaseVoucher> vouchers = unresolvedSaleAndPurchaseVoucherRepository.ApprovalAllSearch(date);

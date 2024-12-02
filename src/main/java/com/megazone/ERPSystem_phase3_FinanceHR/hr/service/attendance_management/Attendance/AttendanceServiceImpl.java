@@ -10,9 +10,9 @@ import com.megazone.ERPSystem_phase3_FinanceHR.hr.model.attendance_management.en
 import com.megazone.ERPSystem_phase3_FinanceHR.hr.model.basic_information_management.employee.Employee;
 import com.megazone.ERPSystem_phase3_FinanceHR.hr.repository.attendance_management.Attendance.AttendanceRepository;
 import com.megazone.ERPSystem_phase3_FinanceHR.hr.repository.basic_information_management.Employee.EmployeeRepository;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -140,6 +140,7 @@ public class AttendanceServiceImpl implements AttendanceService {
 
     // 특정 사원 근태 기록 조회
     @Override
+    @Transactional(readOnly = true)
     public Optional<EmployeeAttendanceDTO> getAttendanceRecords(Long id) {
         Attendance attendanceRecords = attendanceRepository.findById(id).orElseThrow(()-> new IllegalArgumentException("아이디를 조회할 수 없습니다."));
         EmployeeAttendanceDTO dto = new EmployeeAttendanceDTO();
@@ -159,6 +160,7 @@ public class AttendanceServiceImpl implements AttendanceService {
 
     // 모든 직원 근태 기록 조회
     @Override
+    @Transactional(readOnly = true)
     public List<AttendanceShowDTO> getAllAttendanceRecords() {
         List<Attendance> attendanceList = attendanceRepository.findAll();
 
@@ -183,6 +185,7 @@ public class AttendanceServiceImpl implements AttendanceService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<EmployeeAttendanceDTO> getEmployeeAttendanceList(Long searchEmployeeId) {
         try {
             return attendanceRepository.findAttendanceList(searchEmployeeId);

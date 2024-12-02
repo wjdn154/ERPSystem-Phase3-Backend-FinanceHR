@@ -19,6 +19,7 @@ public class ClientLedgerServiceImpl implements ClientLedgerService {
     private final ResolvedVoucherRepository resolvedVoucherRepository;
 
     @Override
+    @Transactional(readOnly = true)
     public ClientLedgerShowAllDTO show(ClientLedgerSearchDTO dto) {
         List<ClientLedgerShowDTO> clientLedgerShowDTOS = resolvedVoucherRepository.clientLedgerList(dto);
         BigDecimal totalSumPreviousCash = BigDecimal.ZERO;

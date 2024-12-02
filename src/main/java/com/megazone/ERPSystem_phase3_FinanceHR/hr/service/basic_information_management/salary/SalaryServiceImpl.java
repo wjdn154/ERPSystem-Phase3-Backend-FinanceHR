@@ -8,9 +8,9 @@ import com.megazone.ERPSystem_phase3_FinanceHR.hr.repository.basic_configuration
 import com.megazone.ERPSystem_phase3_FinanceHR.hr.repository.basic_information_management.Employee.EmployeeRepository;
 import com.megazone.ERPSystem_phase3_FinanceHR.hr.repository.basic_information_management.salary.LongTermCareInsurancePensionRepository;
 import com.megazone.ERPSystem_phase3_FinanceHR.hr.repository.basic_information_management.salary.SalaryRepository;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.NoSuchElementException;
 
@@ -51,6 +51,7 @@ public class SalaryServiceImpl implements SalaryService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public SalaryShowDto show(Long employeeId) {
         Employee employee = employeeRepository.findById(employeeId).orElseThrow(
                 () -> new NoSuchElementException("해당하는 사원이 없습니다."));

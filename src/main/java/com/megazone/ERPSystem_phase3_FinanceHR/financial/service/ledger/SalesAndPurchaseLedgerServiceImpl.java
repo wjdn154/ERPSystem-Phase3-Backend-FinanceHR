@@ -17,7 +17,9 @@ import java.time.YearMonth;
 @RequiredArgsConstructor
 public class SalesAndPurchaseLedgerServiceImpl implements SalesAndPurchaseLedgerService {
     private final ResolvedSaleAndPurchaseVoucherRepository resolvedSaleAndPurchaseVoucherRepository;
+
     @Override
+    @Transactional(readOnly = true)
     public SalesAndPurChaseLedgerShowAllDTO showAll(SalesAndPurChaseLedgerSearchDTO dto) {
         List<SalesAndPurChaseLedgerShowDTO> dtos = resolvedSaleAndPurchaseVoucherRepository.SalesAndPurChaseLedgerShowList(dto);
 

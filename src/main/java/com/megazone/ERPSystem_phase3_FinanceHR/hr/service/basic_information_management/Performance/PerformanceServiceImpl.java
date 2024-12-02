@@ -8,9 +8,9 @@ import com.megazone.ERPSystem_phase3_FinanceHR.hr.model.basic_information_manage
 import com.megazone.ERPSystem_phase3_FinanceHR.hr.model.basic_information_management.employee.dto.PerformanceShowDTO;
 import com.megazone.ERPSystem_phase3_FinanceHR.hr.repository.basic_information_management.Employee.EmployeeRepository;
 import com.megazone.ERPSystem_phase3_FinanceHR.hr.repository.basic_information_management.Performance.PerformanceRepository;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -60,6 +60,7 @@ public class PerformanceServiceImpl implements PerformanceService {
     }
 
     // 특정 사원의 성과 평가 조회
+    @Transactional(readOnly = true)
     public List<PerformanceShowDTO> getPerformanceByEmployee(Long employeeId) {
         List<Performance> performances = performanceRepository.findByEmployeeId(employeeId);
 
@@ -78,6 +79,7 @@ public class PerformanceServiceImpl implements PerformanceService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<PerformanceShowDTO> getAllPerformances() {
         List<Performance> performances = performanceRepository.findAll();
         return performances.stream()

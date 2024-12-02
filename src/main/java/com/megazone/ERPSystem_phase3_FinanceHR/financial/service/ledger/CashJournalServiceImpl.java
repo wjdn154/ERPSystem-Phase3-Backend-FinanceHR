@@ -21,6 +21,7 @@ public class CashJournalServiceImpl implements CashJournalService {
     private final ResolvedVoucherRepository resolvedVoucherRepository;
 
     @Override
+    @Transactional(readOnly = true)
     public CashJournalShowAllListDTO showAll(CashJournalSearchDTO dto) {
         // 전기이월금 임의로 설정
         BigDecimal previousTotalDepositAmount = BigDecimal.ZERO;

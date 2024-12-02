@@ -12,9 +12,9 @@ import com.megazone.ERPSystem_phase3_FinanceHR.financial.model.voucher_entry.gen
 import com.megazone.ERPSystem_phase3_FinanceHR.financial.model.voucher_entry.general_voucher_entry.ResolvedVoucher;
 import com.megazone.ERPSystem_phase3_FinanceHR.financial.model.voucher_entry.general_voucher_entry.UnresolvedVoucher;
 import com.megazone.ERPSystem_phase3_FinanceHR.financial.repository.voucher_entry.general_voucher_entry.resolvedVoucher.ResolvedVoucherRepository;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -38,6 +38,7 @@ public class ResolvedVoucherServiceImpl implements ResolvedVoucherService {
      * @return 생성된 일반전표 반환
      */
     @Override
+    @Transactional(readOnly = true)
     public void resolvedVoucherEntry(List<UnresolvedVoucher> unresolvedVoucherList) {
         List<ResolvedVoucher> resolvedVoucherList = new ArrayList<>();
         LocalDateTime nowTime = LocalDateTime.now();
@@ -72,6 +73,7 @@ public class ResolvedVoucherServiceImpl implements ResolvedVoucherService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<ResolvedVoucher> resolvedVoucherAllSearch(LocalDate date) {
         List<ResolvedVoucher> resolvedVoucherList = new ArrayList<ResolvedVoucher>();
         try {

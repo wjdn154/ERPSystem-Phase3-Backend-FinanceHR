@@ -21,11 +21,13 @@ public class JournalServiceImpl implements JournalService {
 
 
     @Override
+    @Transactional(readOnly = true)
     public List<UnresolvedVoucher> journalSearch(LocalDate StartDate, LocalDate EndDate) {
         return unresolvedVoucherRepository.journalSearch(StartDate, EndDate);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<BigDecimal> journalTotalAmount(LocalDate StartDate, LocalDate EndDate) {
         List<BigDecimal> amounts = new ArrayList<>();
         amounts.add(unresolvedVoucherRepository.testTotalDebit(StartDate, EndDate));
@@ -35,6 +37,7 @@ public class JournalServiceImpl implements JournalService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public BigDecimal journalTotalCount(LocalDate StartDate, LocalDate EndDate) {
         return unresolvedVoucherRepository.journalTotalCount(StartDate, EndDate);
     }

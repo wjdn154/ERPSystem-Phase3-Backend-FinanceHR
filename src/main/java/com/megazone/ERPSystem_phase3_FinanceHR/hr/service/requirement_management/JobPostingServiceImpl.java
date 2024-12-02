@@ -17,6 +17,7 @@ public class JobPostingServiceImpl implements JobPostingService {
     private final JobPostingRepository jobPostingRepository;
 
     // 모든 채용 공고를 조회하여 DTO로 변환
+    @Transactional(readOnly = true)
     public List<JobPostingDTO> findAllJobPostings() {
         List<JobPosting> jobPostings = jobPostingRepository.findAll();
 
