@@ -40,30 +40,40 @@ public class SecretManagerConfig {
 
     public DatabaseCredentials getWriterSecret() {
         return new DatabaseCredentials(
-//                getCachedSecret("omz-env-secrets-backend", "RDS_FINANCIAL_HR_WRITER_DB_URL"),
-//                getCachedSecret("omz-env-secrets-backend", "RDS_DB_USER"),
-//                getCachedSecret("omz-env-secrets-backend", "RDS_DB_PASSWORD")
-//                getSecretValueFromJson("omz-env-secrets-backend", "CLUSTER_FINANCIAL_HR_DB_URL"),
-//                getSecretValueFromJson("omz-env-secrets-backend", "CLUSTER_DB_USER"),
-//                getSecretValueFromJson("omz-env-secrets-backend", "CLUSTER_DB_PASSWORD")
-                getSecretValueFromJson("omz-env-secrets-backend", "LOCAL_FINANCIAL_HR_DB_URL"),
-                getSecretValueFromJson("omz-env-secrets-backend", "LOCAL_DB_USER"),
-                getSecretValueFromJson("omz-env-secrets-backend", "LOCAL_DB_PASSWORD")
+                getCachedSecret("omz-env-secrets-backend", "RDS_FINANCIAL_HR_WRITER_DB_URL"),
+                getCachedSecret("omz-env-secrets-backend", "RDS_DB_USER"),
+                getCachedSecret("omz-env-secrets-backend", "RDS_DB_PASSWORD")
+//                "jdbc:mysql://localhost:3307/PUBLIC?useSSL=false&serverTimezone=Asia/Seoul", "root", "1234"
         );
     }
 
     public DatabaseCredentials getReaderSecret() {
         return new DatabaseCredentials(
-//                getCachedSecret("omz-env-secrets-backend", "RDS_FINANCIAL_HR_READER_DB_URL"),
-//                getCachedSecret("omz-env-secrets-backend", "RDS_DB_USER"),
-//                getCachedSecret("omz-env-secrets-backend", "RDS_DB_PASSWORD")
-//                getSecretValueFromJson("omz-env-secrets-backend", "CLUSTER_FINANCIAL_HR_DB_URL"),
-//                getSecretValueFromJson("omz-env-secrets-backend", "CLUSTER_DB_USER"),
-//                getSecretValueFromJson("omz-env-secrets-backend", "CLUSTER_DB_PASSWORD")
-                getSecretValueFromJson("omz-env-secrets-backend", "LOCAL_FINANCIAL_HR_DB_URL"),
-                getSecretValueFromJson("omz-env-secrets-backend", "LOCAL_DB_USER"),
-                getSecretValueFromJson("omz-env-secrets-backend", "LOCAL_DB_PASSWORD")
+                getCachedSecret("omz-env-secrets-backend", "RDS_FINANCIAL_HR_READER_DB_URL"),
+                getCachedSecret("omz-env-secrets-backend", "RDS_DB_USER"),
+                getCachedSecret("omz-env-secrets-backend", "RDS_DB_PASSWORD")
+//                "jdbc:mysql://localhost:3307/PUBLIC?useSSL=false&serverTimezone=Asia/Seoul", "root", "1234"
         );
+    }
+
+    public String getNotificationServiceUrl() {
+        return getCachedSecret("omz-env-secrets-backend", "CLUSTER_NOTIFICATION_SERVICE_URL");
+//        return "http://localhost:8082/api/notifications/";
+    }
+
+    public String getCommonServiceUrl() {
+        return getCachedSecret("omz-env-secrets-backend", "CLUSTER_COMMON_SERVICE_URL");
+//        return "http://localhost:8082/api/common/";
+    }
+
+    public String getLogisticsServiceUrl() {
+        return getCachedSecret("omz-env-secrets-backend", "CLUSTER_LOGISTICS_SERVICE_URL");
+//        return "http://localhost:8081/api/logistics/";
+    }
+
+    public String getProductionServiceUrl() {
+        return getCachedSecret("omz-env-secrets-backend", "CLUSTER_PRODUCTION_SERVICE_URL");
+//        return "http://localhost:8081/api/production/";
     }
 
     public String getSecretValueFromJson(String secretName, String key) {
