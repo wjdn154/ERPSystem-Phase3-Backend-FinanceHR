@@ -1,12 +1,13 @@
 package com.megazone.ERPSystem_phase3_FinanceHR.financial.service.basic_information_management.client;
 
-import com.megazone.ERPSystem_phase3_FinanceHR.Integrated.model.dashboard.RecentActivity;
+import com.megazone.ERPSystem_phase3_FinanceHR.Integrated.model.dashboard.dto.RecentActivityEntryDTO;
 import com.megazone.ERPSystem_phase3_FinanceHR.Integrated.model.dashboard.enums.ActivityType;
+import com.megazone.ERPSystem_phase3_FinanceHR.Integrated.model.notification.dto.UserNotificationCreateAndSendDTO;
 import com.megazone.ERPSystem_phase3_FinanceHR.Integrated.model.notification.enums.ModuleType;
 import com.megazone.ERPSystem_phase3_FinanceHR.Integrated.model.notification.enums.NotificationType;
 import com.megazone.ERPSystem_phase3_FinanceHR.Integrated.model.notification.enums.PermissionType;
-import com.megazone.ERPSystem_phase3_FinanceHR.Integrated.repository.dashboard.RecentActivityRepository;
-import com.megazone.ERPSystem_phase3_FinanceHR.Integrated.service.notification.NotificationService;
+import com.megazone.ERPSystem_phase3_FinanceHR.Integrated.model.service.IntegratedService;
+import com.megazone.ERPSystem_phase3_FinanceHR.Integrated.model.service.NotificationService;
 import com.megazone.ERPSystem_phase3_FinanceHR.financial.model.basic_information_management.client.*;
 import com.megazone.ERPSystem_phase3_FinanceHR.financial.model.basic_information_management.client.dto.*;
 import com.megazone.ERPSystem_phase3_FinanceHR.financial.model.common.Address;
@@ -45,7 +46,7 @@ public class ClientServiceImpl implements ClientService {
     private final LiquorRepository liquorRepository;
     private final ManageInfoRepository manageInfoRepository;
     private final EmployeeRepository employeeRepository;
-    private final RecentActivityRepository recentActivityRepository;
+    private final IntegratedService integratedService;
     private final NotificationService notificationService;
     /**
      * 거래처 정보를 저장하고 DTO로 반환     *
@@ -67,17 +68,17 @@ public class ClientServiceImpl implements ClientService {
 
         Client savedClient = createClient(clientDTO, client); // 거래처 정보 저장
 
-        recentActivityRepository.save(RecentActivity.builder()
-                .activityDescription(savedClient.getPrintClientName() + " 거래처 추가")
-                .activityType(ActivityType.FINANCE)
-                .activityTime(LocalDateTime.now())
-                .build());
+        integratedService.recentActivitySave(
+                RecentActivityEntryDTO.create(
+                        savedClient.getPrintClientName() + " 거래처 추가",
+                        ActivityType.FINANCE));
 
-        notificationService.createAndSendNotification(
-                ModuleType.ALL,
-                PermissionType.USER,
-                savedClient.getPrintClientName() + " 거래처 추가",
-                NotificationType.NEW_CLIENT);
+        notificationService.createAndSend(
+                UserNotificationCreateAndSendDTO.create(
+                        ModuleType.ALL,
+                        PermissionType.USER,
+                        savedClient.getPrintClientName() + " 거래처 추가",
+                        NotificationType.NEW_CLIENT));
 
         return savedClient.getId();
     }
@@ -103,18 +104,16 @@ public class ClientServiceImpl implements ClientService {
 
             Client savedClient = createClient(clientDTO, client); // 거래처 정보 저장
 
-            recentActivityRepository.save(RecentActivity.builder()
-                    .activityDescription(savedClient.getPrintClientName() + " 거래처 수정")
-                    .activityType(ActivityType.FINANCE)
-                    .activityTime(LocalDateTime.now())
-                    .build());
-
-            notificationService.createAndSendNotification(
-                    ModuleType.ALL,
-                    PermissionType.USER,
-                    savedClient.getPrintClientName() + " 거래처 수정",
-                    NotificationType.UPDATE_CLIENT);
-
+            integratedService.recentActivitySave(
+                    RecentActivityEntryDTO.create(
+                            savedClient.getPrintClientName() + " 거래처 수정",
+                            ActivityType.FINANCE));
+            notificationService.createAndSend(
+                    UserNotificationCreateAndSendDTO.create(
+                            ModuleType.ALL,
+                            PermissionType.USER,
+                            savedClient.getPrintClientName() + " 거래처 수정",
+                            NotificationType.UPDATE_CLIENT));
             ModelMapper modelMapper = new ModelMapper();
             return modelMapper.map(savedClient, ClientDTO.class);
         }).orElse(null);

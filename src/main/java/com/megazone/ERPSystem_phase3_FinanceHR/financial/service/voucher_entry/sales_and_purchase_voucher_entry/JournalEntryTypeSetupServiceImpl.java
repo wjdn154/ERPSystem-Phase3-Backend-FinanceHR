@@ -1,12 +1,13 @@
 package com.megazone.ERPSystem_phase3_FinanceHR.financial.service.voucher_entry.sales_and_purchase_voucher_entry;
 
-import com.megazone.ERPSystem_phase3_FinanceHR.Integrated.model.dashboard.RecentActivity;
+import com.megazone.ERPSystem_phase3_FinanceHR.Integrated.model.dashboard.dto.RecentActivityEntryDTO;
 import com.megazone.ERPSystem_phase3_FinanceHR.Integrated.model.dashboard.enums.ActivityType;
+import com.megazone.ERPSystem_phase3_FinanceHR.Integrated.model.notification.dto.UserNotificationCreateAndSendDTO;
 import com.megazone.ERPSystem_phase3_FinanceHR.Integrated.model.notification.enums.ModuleType;
 import com.megazone.ERPSystem_phase3_FinanceHR.Integrated.model.notification.enums.NotificationType;
 import com.megazone.ERPSystem_phase3_FinanceHR.Integrated.model.notification.enums.PermissionType;
-import com.megazone.ERPSystem_phase3_FinanceHR.Integrated.repository.dashboard.RecentActivityRepository;
-import com.megazone.ERPSystem_phase3_FinanceHR.Integrated.service.notification.NotificationService;
+import com.megazone.ERPSystem_phase3_FinanceHR.Integrated.model.service.IntegratedService;
+import com.megazone.ERPSystem_phase3_FinanceHR.Integrated.model.service.NotificationService;
 import com.megazone.ERPSystem_phase3_FinanceHR.financial.model.basic_information_management.account_subject.AccountSubject;
 import com.megazone.ERPSystem_phase3_FinanceHR.financial.model.voucher_entry.sales_and_purchase_voucher_entry.JournalEntryTypeSetup;
 import com.megazone.ERPSystem_phase3_FinanceHR.financial.model.voucher_entry.sales_and_purchase_voucher_entry.dto.JournalEntryTypeSetupShowDTO;
@@ -28,7 +29,7 @@ import java.util.List;
 public class JournalEntryTypeSetupServiceImpl implements JournalEntryTypeSetupService {
     private final JournalEntryTypeSetupRepository journalEntryTypeSetupRepository;
     private final AccountSubjectRepository accountSubjectRepository;
-    private final RecentActivityRepository recentActivityRepository;
+    private final IntegratedService integratedService;
     private final NotificationService notificationService;
 
     @PersistenceContext
@@ -64,18 +65,17 @@ public class JournalEntryTypeSetupServiceImpl implements JournalEntryTypeSetupSe
 
             // 엔티티 저장
             journalEntryTypeSetupRepository.save(journalEntryTypeSetup);
-
-            recentActivityRepository.save(RecentActivity.builder()
-                    .activityDescription("분개유형 수정")
-                    .activityType(ActivityType.FINANCE)
-                    .activityTime(LocalDateTime.now())
-                    .build());
-            notificationService.createAndSendNotification(
-                    ModuleType.FINANCE,
-                    PermissionType.USER,
-                    "분개유형 수정",
-                    NotificationType.JOURNAL_ENTRY_TYPESET);
         });
+        integratedService.recentActivitySave(
+                RecentActivityEntryDTO.create(
+                        "분개유형 수정",
+                        ActivityType.FINANCE));
+        notificationService.createAndSend(
+                UserNotificationCreateAndSendDTO.create(
+                        ModuleType.FINANCE,
+                        PermissionType.USER,
+                        "분개유형 수정",
+                        NotificationType.JOURNAL_ENTRY_TYPESET));
         return journalEntryTypeSetupRepository.findAll().stream().map(JournalEntryTypeSetupShowDTO::create).toList();
     }
 }

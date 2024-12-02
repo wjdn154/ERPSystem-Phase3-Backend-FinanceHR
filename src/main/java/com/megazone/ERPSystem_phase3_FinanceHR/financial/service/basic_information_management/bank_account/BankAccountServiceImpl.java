@@ -1,12 +1,13 @@
 package com.megazone.ERPSystem_phase3_FinanceHR.financial.service.basic_information_management.bank_account;
 
-import com.megazone.ERPSystem_phase3_FinanceHR.Integrated.model.dashboard.RecentActivity;
+import com.megazone.ERPSystem_phase3_FinanceHR.Integrated.model.dashboard.dto.RecentActivityEntryDTO;
 import com.megazone.ERPSystem_phase3_FinanceHR.Integrated.model.dashboard.enums.ActivityType;
+import com.megazone.ERPSystem_phase3_FinanceHR.Integrated.model.notification.dto.UserNotificationCreateAndSendDTO;
 import com.megazone.ERPSystem_phase3_FinanceHR.Integrated.model.notification.enums.ModuleType;
 import com.megazone.ERPSystem_phase3_FinanceHR.Integrated.model.notification.enums.NotificationType;
 import com.megazone.ERPSystem_phase3_FinanceHR.Integrated.model.notification.enums.PermissionType;
-import com.megazone.ERPSystem_phase3_FinanceHR.Integrated.repository.dashboard.RecentActivityRepository;
-import com.megazone.ERPSystem_phase3_FinanceHR.Integrated.service.notification.NotificationService;
+import com.megazone.ERPSystem_phase3_FinanceHR.Integrated.model.service.IntegratedService;
+import com.megazone.ERPSystem_phase3_FinanceHR.Integrated.model.service.NotificationService;
 import com.megazone.ERPSystem_phase3_FinanceHR.financial.model.basic_information_management.bank_account.AccountType;
 import com.megazone.ERPSystem_phase3_FinanceHR.financial.model.basic_information_management.bank_account.dto.BankAccountDTO;
 import com.megazone.ERPSystem_phase3_FinanceHR.financial.model.basic_information_management.bank_account.BankAccount;
@@ -38,7 +39,7 @@ public class BankAccountServiceImpl implements BankAccountService {
     private final AddressRepository addressRepository;
     private final BankRepository bankRepository;
     private final ContactRepository contactRepository;
-    private final RecentActivityRepository recentActivityRepository;
+    private final IntegratedService integratedService;
     private final NotificationService notificationService;
 
     /**
@@ -56,16 +57,16 @@ public class BankAccountServiceImpl implements BankAccountService {
         createAddress(bankAccountDTO, bankAccount); // 주소 정보 설정
         BankAccount savedBankAccount = createBankAccount(bankAccountDTO, bankAccount); // 은행 계좌 저장
 
-        recentActivityRepository.save(RecentActivity.builder()
-                .activityDescription(bankAccount.getName() + " 신규 계좌 등록")
-                .activityType(ActivityType.FINANCE)
-                .activityTime(LocalDateTime.now())
-                .build());
-        notificationService.createAndSendNotification(
-                ModuleType.FINANCE,
-                PermissionType.USER,
-                bankAccount.getName() + " 신규 계좌 등록",
-                NotificationType.NEW_BANKACCOUNT);
+        integratedService.recentActivitySave(
+                RecentActivityEntryDTO.create(
+                        bankAccount.getName() + " 신규 계좌 등록",
+                        ActivityType.FINANCE));
+        notificationService.createAndSend(
+                UserNotificationCreateAndSendDTO.create(
+                        ModuleType.FINANCE,
+                        PermissionType.USER,
+                        bankAccount.getName() + " 신규 계좌 등록",
+                        NotificationType.NEW_BANKACCOUNT));
 
         // 저장된 정보를 DTO로 변환하여 반환
         return Optional.of(new BankAccountDTO(savedBankAccount));
@@ -87,17 +88,16 @@ public class BankAccountServiceImpl implements BankAccountService {
             updateAddress(bankAccountDTO, bankAccount); // 주소 정보 업데이트
             BankAccount updatedBankAccount = createBankAccount(bankAccountDTO, bankAccount); // 은행 정보 계좌 업데이트
 
-            recentActivityRepository.save(RecentActivity.builder()
-                    .activityDescription(bankAccount.getName() + " 계좌정보 수정")
-                    .activityType(ActivityType.FINANCE)
-                    .activityTime(LocalDateTime.now())
-                    .build());
-            notificationService.createAndSendNotification(
-                    ModuleType.FINANCE,
-                    PermissionType.USER,
-                    bankAccount.getName() + " 계좌정보 수정",
-                    NotificationType.UPDATE_BANKACCOUNT);
-
+            integratedService.recentActivitySave(
+                    RecentActivityEntryDTO.create(
+                            bankAccount.getName() + " 계좌정보 수정",
+                            ActivityType.FINANCE));
+            notificationService.createAndSend(
+                    UserNotificationCreateAndSendDTO.create(
+                            ModuleType.FINANCE,
+                            PermissionType.USER,
+                            bankAccount.getName() + " 계좌정보 수정",
+                            NotificationType.UPDATE_BANKACCOUNT));
             // 수정된 정보를 DTO로 변환하여 반환
             return new BankAccountDTO(updatedBankAccount);
         });

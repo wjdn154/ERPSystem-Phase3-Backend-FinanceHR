@@ -8,5 +8,5 @@ import java.util.List;
 
 public interface IncomeStatementService {
     List<IncomeStatementLedgerShowDTO> show(IncomeStatementSearchDTO dto);
-    IncomeStatementLedgerDashBoardDTO DashBoardShow();
+    IncomeStatementLedgerDashBoardDTO dashBoardShow();
 }

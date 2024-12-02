@@ -1,12 +1,13 @@
 package com.megazone.ERPSystem_phase3_FinanceHR.financial.service.basic_information_management.account_subject;
 
-import com.megazone.ERPSystem_phase3_FinanceHR.Integrated.model.dashboard.RecentActivity;
+import com.megazone.ERPSystem_phase3_FinanceHR.Integrated.model.dashboard.dto.RecentActivityEntryDTO;
 import com.megazone.ERPSystem_phase3_FinanceHR.Integrated.model.dashboard.enums.ActivityType;
+import com.megazone.ERPSystem_phase3_FinanceHR.Integrated.model.notification.dto.UserNotificationCreateAndSendDTO;
 import com.megazone.ERPSystem_phase3_FinanceHR.Integrated.model.notification.enums.ModuleType;
 import com.megazone.ERPSystem_phase3_FinanceHR.Integrated.model.notification.enums.NotificationType;
 import com.megazone.ERPSystem_phase3_FinanceHR.Integrated.model.notification.enums.PermissionType;
-import com.megazone.ERPSystem_phase3_FinanceHR.Integrated.repository.dashboard.RecentActivityRepository;
-import com.megazone.ERPSystem_phase3_FinanceHR.Integrated.service.notification.NotificationService;
+import com.megazone.ERPSystem_phase3_FinanceHR.Integrated.model.service.IntegratedService;
+import com.megazone.ERPSystem_phase3_FinanceHR.Integrated.model.service.NotificationService;
 import com.megazone.ERPSystem_phase3_FinanceHR.financial.model.basic_information_management.account_subject.*;
 import com.megazone.ERPSystem_phase3_FinanceHR.financial.model.basic_information_management.account_subject.dto.*;
 import com.megazone.ERPSystem_phase3_FinanceHR.financial.repository.basic_information_management.account_subject.AccountSubjectRepository;
@@ -36,7 +37,7 @@ public class AccountSubjectServiceImpl implements AccountSubjectService {
     private final StandardFinancialStatementRepository standardFinancialStatementRepository;
     private final StructureRepository structureRepository;
     private final TransferMemoRepository transferMemoRepository;
-    private final RecentActivityRepository recentActivityRepository;
+    private final IntegratedService integratedService;
     private final NotificationService notificationService;
 
     /**
@@ -94,16 +95,16 @@ public class AccountSubjectServiceImpl implements AccountSubjectService {
                 cashMemo.setCode(memoRequestDTO.getCode());
                 CashMemo savedMemo = cashMemoRepository.save(cashMemo);
 
-                recentActivityRepository.save(RecentActivity.builder()
-                        .activityDescription(accountSubject.getName() + " 계정과목 " + cashMemo.getContent() + "현금적요 추가")
-                        .activityType(ActivityType.FINANCE)
-                        .activityTime(LocalDateTime.now())
-                        .build());
-                notificationService.createAndSendNotification(
-                        ModuleType.FINANCE,
-                        PermissionType.USER,
-                        accountSubject.getName() + " 계정과목 " + cashMemo.getContent() + "현금적요 추가",
-                        NotificationType.NEW_CASHMEMO);
+                integratedService.recentActivitySave(
+                        RecentActivityEntryDTO.create(
+                                accountSubject.getName() + " 계정과목 " + cashMemo.getContent() + "현금적요 추가",
+                                ActivityType.FINANCE));
+                notificationService.createAndSend(
+                        UserNotificationCreateAndSendDTO.create(
+                                ModuleType.FINANCE,
+                                PermissionType.USER,
+                                accountSubject.getName() + " 계정과목 " + cashMemo.getContent() + "현금적요 추가",
+                                NotificationType.NEW_CASHMEMO));
 
                 return Optional.of(new CashMemoDTO(savedMemo.getId(), savedMemo.getCode(), savedMemo.getContent()));
             case "TRANSFER":
@@ -112,16 +113,16 @@ public class AccountSubjectServiceImpl implements AccountSubjectService {
                 transferMemo.setContent(memoRequestDTO.getContent());
                 TransferMemo savedTransferMemo = transferMemoRepository.save(transferMemo);
 
-                recentActivityRepository.save(RecentActivity.builder()
-                        .activityDescription(accountSubject.getName() + " 계정과목 " + transferMemo.getContent() + "대체적요 추가")
-                        .activityType(ActivityType.FINANCE)
-                        .activityTime(LocalDateTime.now())
-                        .build());
-                notificationService.createAndSendNotification(
-                        ModuleType.FINANCE,
-                        PermissionType.USER,
-                        accountSubject.getName() + " 계정과목 " + transferMemo.getContent() + "대체적요 추가",
-                        NotificationType.NEW_TRANSFERMEMO);
+                integratedService.recentActivitySave(
+                        RecentActivityEntryDTO.create(
+                                accountSubject.getName() + " 계정과목 " + transferMemo.getContent() + "대체적요 추가",
+                                ActivityType.FINANCE));
+                notificationService.createAndSend(
+                        UserNotificationCreateAndSendDTO.create(
+                                ModuleType.FINANCE,
+                                PermissionType.USER,
+                                accountSubject.getName() + " 계정과목 " + transferMemo.getContent() + "대체적요 추가",
+                                NotificationType.NEW_TRANSFERMEMO));
                 return Optional.of(new TransferMemoDTO(savedTransferMemo.getId(), savedTransferMemo.getCode(), savedTransferMemo.getContent()));
             default:
                 // 잘못된 메모 타입이 입력된 경우 예외를 던짐
@@ -211,16 +212,16 @@ public class AccountSubjectServiceImpl implements AccountSubjectService {
         // 엔티티 저장
         AccountSubject savedAccountSubject = accountSubjectRepository.save(accountSubject);
 
-        recentActivityRepository.save(RecentActivity.builder()
-                .activityDescription(savedAccountSubject.getName() + " 계정과목 추가 ")
-                .activityType(ActivityType.FINANCE)
-                .activityTime(LocalDateTime.now())
-                .build());
-        notificationService.createAndSendNotification(
-                ModuleType.FINANCE,
-                PermissionType.USER,
-                savedAccountSubject.getName() + " 계정과목 추가",
-                NotificationType.NEW_ACCOUNTSUBJECT);
+        integratedService.recentActivitySave(
+                RecentActivityEntryDTO.create(
+                        savedAccountSubject.getName() + " 계정과목 추가 ",
+                        ActivityType.FINANCE));
+        notificationService.createAndSend(
+                UserNotificationCreateAndSendDTO.create(
+                        ModuleType.FINANCE,
+                        PermissionType.USER,
+                        savedAccountSubject.getName() + " 계정과목 추가",
+                        NotificationType.NEW_ACCOUNTSUBJECT));
 
         // 엔티티를 DTO로 변환하여 반환
         AccountSubjectDTO accountSubjectDTO = convertToDTO(savedAccountSubject);
@@ -289,16 +290,16 @@ public class AccountSubjectServiceImpl implements AccountSubjectService {
         // 엔티티 저장
         AccountSubject updatedAccountSubject = accountSubjectRepository.save(accountSubject);
 
-        recentActivityRepository.save(RecentActivity.builder()
-                .activityDescription(updatedAccountSubject.getName() + " 계정과목 수정")
-                .activityType(ActivityType.FINANCE)
-                .activityTime(LocalDateTime.now())
-                .build());
-        notificationService.createAndSendNotification(
-                ModuleType.FINANCE,
-                PermissionType.USER,
-                updatedAccountSubject.getName() + " 계정과목 수정",
-                NotificationType.UPDATE_ACCOUNTSUBJECT);
+        integratedService.recentActivitySave(
+                RecentActivityEntryDTO.create(
+                        updatedAccountSubject.getName() + " 계정과목 수정",
+                        ActivityType.FINANCE));
+        notificationService.createAndSend(
+                UserNotificationCreateAndSendDTO.create(
+                        ModuleType.FINANCE,
+                        PermissionType.USER,
+                        updatedAccountSubject.getName() + " 계정과목 수정",
+                        NotificationType.UPDATE_ACCOUNTSUBJECT));
 
         // 엔티티를 DTO로 변환하여 반환
         AccountSubjectDTO accountSubjectDTO = new AccountSubjectDTO(
@@ -425,16 +426,16 @@ public class AccountSubjectServiceImpl implements AccountSubjectService {
         // 계정과목을 삭제함
         accountSubjectRepository.delete(accountSubject);
 
-        recentActivityRepository.save(RecentActivity.builder()
-                .activityDescription(accountSubject.getName() + " 계정과목 삭제")
-                .activityType(ActivityType.FINANCE)
-                .activityTime(LocalDateTime.now())
-                .build());
-        notificationService.createAndSendNotification(
-                ModuleType.FINANCE,
-                PermissionType.USER,
-                accountSubject.getName() + " 계정과목 삭제",
-                NotificationType.DELETE_ACCOUNTSUBJECT);
+        integratedService.recentActivitySave(
+                RecentActivityEntryDTO.create(
+                        accountSubject.getName() + " 계정과목 삭제",
+                        ActivityType.FINANCE));
+        notificationService.createAndSend(
+                UserNotificationCreateAndSendDTO.create(
+                        ModuleType.FINANCE,
+                        PermissionType.USER,
+                        accountSubject.getName() + " 계정과목 삭제",
+                        NotificationType.DELETE_ACCOUNTSUBJECT));
     }
 
     private AccountSubjectDTO convertToDTO(AccountSubject accountSubject) {

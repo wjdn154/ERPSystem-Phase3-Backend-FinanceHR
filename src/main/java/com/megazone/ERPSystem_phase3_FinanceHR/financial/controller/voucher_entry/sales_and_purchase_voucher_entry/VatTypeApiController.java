@@ -77,26 +77,26 @@ public class VatTypeApiController {
         }
     }
 
-    @PostMapping("/api/financial/vatType/vatType/get")
-    public ResponseEntity<Object> vatTypeGet(@RequestBody Map<String, Long> vatTypeId) {
-        try {
-            Long targetId = vatTypeId.get("vatTypeId");
-            VatTypeShowDTO vatType = vatTypeService.vatTypeGet(targetId);
-            return ResponseEntity.status(HttpStatus.OK).body(vatType);
-        }
-        catch(RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e);
-        }
-    }
-
-    @PostMapping("api/financial/vatType/vatType/getAll")
-    public ResponseEntity<Object> vatTypeGetAll(@RequestBody List<Long> vatTypeIdList) {
-        try {
-            List<VatTypeShowDTO> vatTypeList = vatTypeService.vatTypeGetAll(vatTypeIdList);
-            return ResponseEntity.status(HttpStatus.OK).body(vatTypeList);
-        }
-        catch(RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e);
-        }
-    }
+//    @PostMapping("/api/financial/vatType/vatType/get")
+//    public ResponseEntity<Object> vatTypeGet(@RequestBody Map<String, Long> vatTypeId) {
+//        try {
+//            Long targetId = vatTypeId.get("vatTypeId");
+//            VatTypeShowDTO vatType = vatTypeService.vatTypeGet(targetId);
+//            return ResponseEntity.status(HttpStatus.OK).body(vatType);
+//        }
+//        catch(RuntimeException e) {
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e);
+//        }
+//    }
+//
+//    @PostMapping("api/financial/vatType/vatType/getAll")
+//    public ResponseEntity<Object> vatTypeGetAll(@RequestBody List<Long> vatTypeIdList) {
+//        try {
+//            List<VatTypeShowDTO> vatTypeList = vatTypeService.vatTypeGetAll(vatTypeIdList);
+//            return ResponseEntity.status(HttpStatus.OK).body(vatTypeList);
+//        }
+//        catch(RuntimeException e) {
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e);
+//        }
+//    }
 }

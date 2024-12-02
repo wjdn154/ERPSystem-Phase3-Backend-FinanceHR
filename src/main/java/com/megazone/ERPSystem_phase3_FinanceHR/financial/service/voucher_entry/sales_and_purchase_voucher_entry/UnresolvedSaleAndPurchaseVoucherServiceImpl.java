@@ -1,12 +1,13 @@
 package com.megazone.ERPSystem_phase3_FinanceHR.financial.service.voucher_entry.sales_and_purchase_voucher_entry;
 
-import com.megazone.ERPSystem_phase3_FinanceHR.Integrated.model.dashboard.RecentActivity;
+import com.megazone.ERPSystem_phase3_FinanceHR.Integrated.model.dashboard.dto.RecentActivityEntryDTO;
 import com.megazone.ERPSystem_phase3_FinanceHR.Integrated.model.dashboard.enums.ActivityType;
+import com.megazone.ERPSystem_phase3_FinanceHR.Integrated.model.notification.dto.UserNotificationCreateAndSendDTO;
 import com.megazone.ERPSystem_phase3_FinanceHR.Integrated.model.notification.enums.ModuleType;
 import com.megazone.ERPSystem_phase3_FinanceHR.Integrated.model.notification.enums.NotificationType;
 import com.megazone.ERPSystem_phase3_FinanceHR.Integrated.model.notification.enums.PermissionType;
-import com.megazone.ERPSystem_phase3_FinanceHR.Integrated.repository.dashboard.RecentActivityRepository;
-import com.megazone.ERPSystem_phase3_FinanceHR.Integrated.service.notification.NotificationService;
+import com.megazone.ERPSystem_phase3_FinanceHR.Integrated.model.service.IntegratedService;
+import com.megazone.ERPSystem_phase3_FinanceHR.Integrated.model.service.NotificationService;
 import com.megazone.ERPSystem_phase3_FinanceHR.financial.model.basic_information_management.account_subject.AccountSubject;
 import com.megazone.ERPSystem_phase3_FinanceHR.financial.model.basic_information_management.client.Client;
 import com.megazone.ERPSystem_phase3_FinanceHR.financial.model.voucher_entry.general_voucher_entry.UnresolvedVoucher;
@@ -54,7 +55,7 @@ public class UnresolvedSaleAndPurchaseVoucherServiceImpl implements UnresolvedSa
     private final ResolvedSaleAndPurchaseVoucherService resolvedSaleAndPurchaseVoucherService;
     private final EmployeeRepository employeeRepository;
     private final ClientRepository clientRepository;
-    private final RecentActivityRepository recentActivityRepository;
+    private final IntegratedService integratedService;
     private final NotificationService notificationService;
 
     @Override
@@ -101,16 +102,16 @@ public class UnresolvedSaleAndPurchaseVoucherServiceImpl implements UnresolvedSa
         unresolvedSaleAndPurchaseVoucher.setVoucherNumber(unresolvedSaleAndPurchaseVoucher.getUnresolvedVouchers().get(0).
                 getVoucherNumber());
 
-        recentActivityRepository.save(RecentActivity.builder()
-                .activityDescription("미결 매출매입전표 추가")
-                .activityType(ActivityType.FINANCE)
-                .activityTime(LocalDateTime.now())
-                .build());
-        notificationService.createAndSendNotification(
-                ModuleType.FINANCE,
-                PermissionType.USER,
-                "미결 매출매입전표 추가",
-                NotificationType.NEW_UNRESOLVED_SALEANDPURCHASE_VOUCHER);
+        integratedService.recentActivitySave(
+                RecentActivityEntryDTO.create(
+                        "미결 매출매입전표 추가",
+                        ActivityType.FINANCE));
+        notificationService.createAndSend(
+                UserNotificationCreateAndSendDTO.create(
+                        ModuleType.FINANCE,
+                        PermissionType.USER,
+                        "미결 매출매입전표 추가",
+                        NotificationType.NEW_UNRESOLVED_SALEANDPURCHASE_VOUCHER));
         return unresolvedSaleAndPurchaseVoucher;
     }
 
@@ -417,30 +418,28 @@ public class UnresolvedSaleAndPurchaseVoucherServiceImpl implements UnresolvedSa
             }
 
             if (dto.getApprovalStatus().equals(ApprovalStatus.APPROVED)){
-                recentActivityRepository.save(RecentActivity.builder()
-                        .activityDescription("미결 매출매입전표 " + unresolvedVoucherList.size() + "건 승인")
-                        .activityType(ActivityType.FINANCE)
-                        .activityTime(LocalDateTime.now())
-                        .build());
-                notificationService.createAndSendNotification(
-                        ModuleType.FINANCE,
-                        PermissionType.ADMIN,
-                        "미결 매출매입전표 " + unresolvedVoucherList.size() + "건 승인",
-                        NotificationType.APPROVAL_VOUCHER
-                );
+                integratedService.recentActivitySave(
+                        RecentActivityEntryDTO.create(
+                                "미결 매출매입전표 " + unresolvedVoucherList.size() + "건 승인",
+                                ActivityType.FINANCE));
+                notificationService.createAndSend(
+                        UserNotificationCreateAndSendDTO.create(
+                                ModuleType.FINANCE,
+                                PermissionType.ADMIN,
+                                "미결 매출매입전표 " + unresolvedVoucherList.size() + "건 승인",
+                                NotificationType.APPROVAL_VOUCHER));
 
             }else if (dto.getApprovalStatus().equals(ApprovalStatus.REJECTED)){
-                recentActivityRepository.save(RecentActivity.builder()
-                        .activityDescription("미결 매출매입전표 " + unresolvedVoucherList.size() + "건 반려")
-                        .activityType(ActivityType.FINANCE)
-                        .activityTime(LocalDateTime.now())
-                        .build());
-                notificationService.createAndSendNotification(
-                        ModuleType.FINANCE,
-                        PermissionType.ADMIN,
-                        "미결 매출매입전표 " + unresolvedVoucherList.size() + "건 반려",
-                        NotificationType.REJECT_VOUCHER
-                );
+                integratedService.recentActivitySave(
+                        RecentActivityEntryDTO.create(
+                                "미결 매출매입전표 " + unresolvedVoucherList.size() + "건 반려",
+                                ActivityType.FINANCE));
+                notificationService.createAndSend(
+                        UserNotificationCreateAndSendDTO.create(
+                                ModuleType.FINANCE,
+                                PermissionType.ADMIN,
+                                "미결 매출매입전표 " + unresolvedVoucherList.size() + "건 반려",
+                                NotificationType.REJECT_VOUCHER));
             }
 
         return unresolvedVoucherList;

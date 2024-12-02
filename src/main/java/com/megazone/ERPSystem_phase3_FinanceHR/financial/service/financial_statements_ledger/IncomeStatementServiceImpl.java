@@ -30,7 +30,7 @@ public class IncomeStatementServiceImpl implements IncomeStatementService {
     }
 
     @Override
-    public IncomeStatementLedgerDashBoardDTO DashBoardShow() {
+    public IncomeStatementLedgerDashBoardDTO dashBoardShow() {
         BigDecimal totalRevenue = BigDecimal.ZERO;
         BigDecimal totalExpense = BigDecimal.ZERO;
 

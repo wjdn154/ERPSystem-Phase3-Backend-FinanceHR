@@ -6,12 +6,17 @@ import com.megazone.ERPSystem_phase3_FinanceHR.financial.model.voucher_entry.sal
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 
 public interface VatTypeService {
     BigDecimal vatAmountCalculate(VatAmountWithQuantityPriceDTO dto);
     BigDecimal vatAmountCalculate(VatAmountWithSupplyAmountDTO dto);
 
     Long vatTypeGetId(String vatTypeId);
-    VatTypeShowDTO vatTypeGet(Long vatTypeId);
-    List<VatTypeShowDTO> vatTypeGetAll(List<Long> vatTypeIdList);
+
+    void vatTypeGet(Map<String, Object> request);
+
+    void vatTypeGetAll(Map<String, Object> request);
+//    VatTypeShowDTO vatTypeGet(Long vatTypeId);
+//    List<VatTypeShowDTO> vatTypeGetAll(List<Long> vatTypeIdList);
 }

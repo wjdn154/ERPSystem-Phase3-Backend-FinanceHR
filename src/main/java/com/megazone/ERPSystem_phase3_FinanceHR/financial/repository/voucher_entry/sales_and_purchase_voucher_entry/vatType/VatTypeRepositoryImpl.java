@@ -15,11 +15,6 @@ import java.util.List;
 public class VatTypeRepositoryImpl implements VatTypeRepositoryCustom {
     private final JPAQueryFactory jpaQueryFactory;
 
-    private String vatTypeCode;
-    private String vatTypeName;
-    private String description;
-    private TransactionType transactionType;
-
     @Override
     public List<VatTypeShowDTO> getVatTypeAll(List<Long> vatTypeIdList) {
         QVatType vatType = QVatType.vatType;

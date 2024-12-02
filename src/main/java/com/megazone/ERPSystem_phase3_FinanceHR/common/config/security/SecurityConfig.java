@@ -61,7 +61,6 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/hr/auth/**").permitAll()
                         .requestMatchers("/api/financial/company/**").permitAll()
-                        .requestMatchers("/api/notifications/subscribe").permitAll()
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .anyRequest().authenticated()
                 )
