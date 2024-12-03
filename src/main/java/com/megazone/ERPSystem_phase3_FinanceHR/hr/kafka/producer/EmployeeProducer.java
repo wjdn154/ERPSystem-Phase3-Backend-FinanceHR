@@ -25,13 +25,15 @@ public class EmployeeProducer {
         String currentTenant = TenantContext.getCurrentTenant();
 
         Map<String, Object> messagePayload = Map.of(
+                "sagaName",employeeUpdateTopic,
                 "requestId", requestId,
                 "tenant", currentTenant,
                 "data", dto
         );
 
         try {
-            kafkaProducerHelper.sendMessage(employeeUpdateTopic, requestId, messagePayload);
+            kafkaProducerHelper.sendMessage("saga-start", requestId, messagePayload);
+            System.out.println("saga-start 메시지 발행 성공 : " + employeeUpdateTopic);
         } catch (Exception e) {
             kafkaProducerHelper.sendMessage(employeeUpdateTopic, requestId, Map.of(
                     "requestId", requestId,
@@ -47,10 +49,12 @@ public class EmployeeProducer {
         Map<String, Object> messagePayload = Map.of(
                 "requestId", requestId,
                 "tenant", currentTenant,
-                "data", dto);
+                "data", dto,
+                "targetTopic", employeeSaveTopic);
 
         try {
-            kafkaProducerHelper.sendMessage(employeeSaveTopic, requestId, messagePayload);
+            kafkaProducerHelper.sendMessage("saga-start", requestId, messagePayload);
+            System.out.println("saga-start 메시지 발행 성공 : " + employeeSaveTopic);
         } catch (Exception e) {
             kafkaProducerHelper.sendMessage(employeeSaveTopic, requestId, Map.of(
                     "requestId", requestId,
