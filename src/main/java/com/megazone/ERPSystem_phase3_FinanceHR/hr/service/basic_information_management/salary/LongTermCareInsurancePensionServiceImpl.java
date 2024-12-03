@@ -19,6 +19,7 @@ public class LongTermCareInsurancePensionServiceImpl implements LongTermCareInsu
     private final LongTermCareInsurancePensionRepository repository;
 
     @Override
+    @Transactional(readOnly = true)
     public List<LongTermCareInsuranceShowDTO> showAll() {
         List<LongTermCareInsurancePension> longTermCareInsurancePension = repository.findAll();
         return longTermCareInsurancePension.stream().map(
@@ -26,6 +27,7 @@ public class LongTermCareInsurancePensionServiceImpl implements LongTermCareInsu
     }
 
     @Override
+    @Transactional(readOnly = true)
     public BigDecimal calculator(LongTermCareInsuranceCalculatorDTO dto) {
         LongTermCareInsurancePension longTermCareInsurancePension = repository.findFirstByEndDateIsNull().orElseThrow(
         () -> new NoSuchElementException("해당하는 장기요양보험 데이터가 없습니다."));

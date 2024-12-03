@@ -43,7 +43,8 @@ public class SecretManagerConfig {
 //                getCachedSecret("omz-env-secrets-backend", "RDS_FINANCIAL_HR_WRITER_DB_URL"),
 //                getCachedSecret("omz-env-secrets-backend", "RDS_DB_USER"),
 //                getCachedSecret("omz-env-secrets-backend", "RDS_DB_PASSWORD")
-                "jdbc:mysql://localhost:3307/PUBLIC?useSSL=false&serverTimezone=Asia/Seoul", "root", "1234"
+                "jdbc:mysql://localhost:3396/PUBLIC?useSSL=false&serverTimezone=Asia/Seoul", "root", "1234"
+
         );
     }
 
@@ -52,7 +53,8 @@ public class SecretManagerConfig {
 //                getCachedSecret("omz-env-secrets-backend", "RDS_FINANCIAL_HR_READER_DB_URL"),
 //                getCachedSecret("omz-env-secrets-backend", "RDS_DB_USER"),
 //                getCachedSecret("omz-env-secrets-backend", "RDS_DB_PASSWORD")
-                "jdbc:mysql://localhost:3307/PUBLIC?useSSL=false&serverTimezone=Asia/Seoul", "root", "1234"
+                "jdbc:mysql://localhost:3396/PUBLIC?useSSL=false&serverTimezone=Asia/Seoul", "root", "1234"
+
         );
     }
 

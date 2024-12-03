@@ -2,20 +2,21 @@ package com.megazone.ERPSystem_phase3_FinanceHR.hr.service.basic_configuration;
 
 import com.megazone.ERPSystem_phase3_FinanceHR.hr.model.basic_configuration.dto.*;
 import com.megazone.ERPSystem_phase3_FinanceHR.hr.repository.basic_configuration.PositionSalaryStepRepository;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.*;
 
 @Service
-@Transactional
 @RequiredArgsConstructor
+@Transactional
 public class PositionSalaryStepServiceImpl implements PositionSalaryStepService {
     private final PositionSalaryStepRepository positionSalaryStepRepository;
 
     @Override
+    @Transactional(readOnly = true)
     public PositionSalaryStepShowAllDTO show(Long positionId) {
 
         List<PositionSalaryStepDTO> queryResults = positionSalaryStepRepository.show(positionId);
@@ -25,6 +26,7 @@ public class PositionSalaryStepServiceImpl implements PositionSalaryStepService 
     }
 
     @Override
+    @Transactional(readOnly = true)
     public PositionSalaryStepShowAllDTO endDateShow(PositionSalaryStepSearchDTO dto) {
         List<PositionSalaryStepDTO> queryResults = positionSalaryStepRepository.endDateShow(dto);
         return showCreate(queryResults);

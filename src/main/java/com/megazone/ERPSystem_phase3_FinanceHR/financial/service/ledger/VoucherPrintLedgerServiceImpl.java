@@ -17,6 +17,7 @@ public class VoucherPrintLedgerServiceImpl implements VoucherPrintLedgerService 
     private final ResolvedVoucherRepository resolvedVoucherRepository;
 
     @Override
+    @Transactional(readOnly = true)
     public List<ResolvedVoucherShowDTO> VoucherPrintList(VoucherPrintSearchDTO dto) {
         return resolvedVoucherRepository.voucherPrintShowList(dto);
     }

@@ -25,6 +25,7 @@ public class FinancialStatementsLedgerServiceImpl implements FinancialStatements
      * 자본총계, 부채총계, 합계 방식 필요
      */
     @Override
+    @Transactional(readOnly = true)
     public List<FinancialStatementsLedgerShowDTO> show(FinancialStatementsLedgerSearchDTO dto) {
         List<FinancialStatementsLedgerDTO> queryResults = resolvedVoucherRepository.financialStatementsShow(dto);
 // 트리 구조 생성

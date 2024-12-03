@@ -19,9 +19,9 @@ import com.megazone.ERPSystem_phase3_FinanceHR.hr.repository.basic_information_m
 import com.megazone.ERPSystem_phase3_FinanceHR.hr.repository.basic_information_management.JobTitle.JobTitleRepository;
 import com.megazone.ERPSystem_phase3_FinanceHR.hr.repository.basic_information_management.Position.PositionRepository;
 import jakarta.persistence.EntityNotFoundException;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -41,6 +41,7 @@ public class DepartmentServiceImpl implements DepartmentService {
 
     // 부서 리스트 조회
     @Override
+    @Transactional(readOnly = true)
     public List<DepartmentShowDTO> findAllDepartments() {
         return departmentRepository.findAll().stream()
                 .map(department -> new DepartmentShowDTO(
@@ -53,6 +54,7 @@ public class DepartmentServiceImpl implements DepartmentService {
 
     // 부서 상세 조회
     @Override
+    @Transactional(readOnly = true)
     public Optional<DepartmentDetailDTO> findDepartmentById(Long id) {
         Optional<Department> department = departmentRepository.findById(id);
 //        Department department = departmentRepository.findById(id)

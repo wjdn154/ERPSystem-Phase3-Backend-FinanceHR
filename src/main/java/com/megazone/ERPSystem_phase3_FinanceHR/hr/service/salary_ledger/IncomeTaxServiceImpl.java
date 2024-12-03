@@ -3,9 +3,9 @@ package com.megazone.ERPSystem_phase3_FinanceHR.hr.service.salary_ledger;
 import com.megazone.ERPSystem_phase3_FinanceHR.hr.model.basic_information_management.salary.IncomeTax;
 import com.megazone.ERPSystem_phase3_FinanceHR.hr.model.basic_information_management.salary.dto.IncomeTaxShowDTO;
 import com.megazone.ERPSystem_phase3_FinanceHR.hr.repository.basic_information_management.salary_ledger.IncomeTaxRepository;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -13,18 +13,20 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-@Transactional
 @RequiredArgsConstructor
+@Transactional
 public class IncomeTaxServiceImpl implements IncomeTaxService {
     private final IncomeTaxRepository incomeTaxRepository;
 
 
     @Override
+    @Transactional(readOnly = true)
     public List<IncomeTax> showBaseIncomeTax() {
         return incomeTaxRepository.findAll();
     }
 
     @Override
+    @Transactional(readOnly = true)
     public BigDecimal incomeTaxCalculator(BigDecimal amount) {
 
         List<IncomeTax> taxTable = incomeTaxRepository.findAll();
@@ -46,6 +48,7 @@ public class IncomeTaxServiceImpl implements IncomeTaxService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<IncomeTaxShowDTO> show() {
         return incomeTaxRepository.findAll().stream().map(
                 one -> IncomeTaxShowDTO.create(one)

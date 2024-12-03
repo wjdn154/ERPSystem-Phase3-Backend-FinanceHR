@@ -16,6 +16,7 @@ public class ClientLedgerAndAccountSubjectServiceImpl implements ClientLedgerAnd
     private final ResolvedVoucherRepository resolvedVoucherRepository;
 
     @Override
+    @Transactional(readOnly = true)
     public List<ClientListDTO> show(ClientAndAccountSubjectLedgerSearchDTO dto) {
         List<ClientListDTO> clientListDTOS = resolvedVoucherRepository.clientAndAccountSubjectLedgerList(dto);
 
@@ -24,6 +25,7 @@ public class ClientLedgerAndAccountSubjectServiceImpl implements ClientLedgerAnd
     }
 
     @Override
+    @Transactional(readOnly = true)
     public ClientAndAccountSubjectLedgerShowDetailAllDTO showDetail(ClientAndAccountSubjectLedgerShowDetailConditionDTO dto) {
         List<ClientAndAccountSubjectLedgerShowDetailDTO> searchDtos = resolvedVoucherRepository.clientAndAccountSubjectLedgerDetail(dto);
 
