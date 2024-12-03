@@ -7,6 +7,8 @@ import com.megazone.ERPSystem_phase3_FinanceHR.financial.model.voucher_entry.sal
 import com.megazone.ERPSystem_phase3_FinanceHR.financial.repository.voucher_entry.sales_and_purchase_voucher_entry.vatType.VatTypeRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import com.megazone.ERPSystem_phase3_FinanceHR.financial.KafkaProducerHelper;
 
