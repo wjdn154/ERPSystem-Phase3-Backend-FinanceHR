@@ -59,6 +59,7 @@ public class LeavesServiceImpl implements LeavesService{
     }
 
     // 휴가 리스트 조회
+    @Transactional(readOnly = true)
     public List<LeavesAllShowDTO> getLeavesList() {
         List<Leaves> leavesList = leavesRepository.findAll();
         return leavesList.stream()

@@ -21,6 +21,7 @@ public class NationalPensionServiceImpl implements NationalPensionService {
     private final PositionSalaryStepRepository positionSalaryStepRepository;
 
     @Override
+    @Transactional(readOnly = true)
     public BigDecimal calculator(InsurancePensionCalculatorDTO dto) {
         BigDecimal salaryAmount =  positionSalaryStepRepository.getSalaryAmount(dto.getPositionId(),dto.getSalaryStepId());
 
@@ -38,6 +39,7 @@ public class NationalPensionServiceImpl implements NationalPensionService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public BigDecimal calculator(BigDecimal amount) {
 
         NationalPension nationalPension = nationalPensionRepository.findFirstByEndDateIsNull().orElseThrow(
@@ -54,6 +56,7 @@ public class NationalPensionServiceImpl implements NationalPensionService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<NationalPensionShowDTO> showAll() {
         List<NationalPension> list = nationalPensionRepository.findAll();
         return list.stream().map(

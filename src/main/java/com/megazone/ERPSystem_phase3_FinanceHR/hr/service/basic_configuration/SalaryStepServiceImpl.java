@@ -4,20 +4,21 @@ import com.megazone.ERPSystem_phase3_FinanceHR.hr.model.basic_configuration.Sala
 import com.megazone.ERPSystem_phase3_FinanceHR.hr.model.basic_configuration.dto.SalaryStepEntryDTO;
 import com.megazone.ERPSystem_phase3_FinanceHR.hr.model.basic_configuration.dto.SalaryStepShowDTO;
 import com.megazone.ERPSystem_phase3_FinanceHR.hr.repository.basic_configuration.SalaryStepRepository;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 
 import java.util.List;
 
 @Service
-@Transactional
 @RequiredArgsConstructor
+@Transactional
 public class SalaryStepServiceImpl implements SalaryStepService {
     private final SalaryStepRepository salaryStepRepository;
 
     @Override
+    @Transactional(readOnly = true)
     public List<SalaryStepShowDTO> show() {
         return salaryStepRepository.findAll().stream().map(
                 salaryStep -> SalaryStepShowDTO.create(salaryStep)).toList();

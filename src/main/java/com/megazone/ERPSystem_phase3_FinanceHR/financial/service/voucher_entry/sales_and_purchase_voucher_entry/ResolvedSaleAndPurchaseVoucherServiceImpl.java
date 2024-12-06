@@ -14,10 +14,9 @@ import com.megazone.ERPSystem_phase3_FinanceHR.financial.model.voucher_entry.sal
 import com.megazone.ERPSystem_phase3_FinanceHR.financial.model.voucher_entry.sales_and_purchase_voucher_entry.UnresolvedSaleAndPurchaseVoucher;
 import com.megazone.ERPSystem_phase3_FinanceHR.financial.model.voucher_entry.sales_and_purchase_voucher_entry.dto.ResolvedSaleAndPurchaseVoucherDeleteDTO;
 import com.megazone.ERPSystem_phase3_FinanceHR.financial.repository.voucher_entry.sales_and_purchase_voucher_entry.resolvedSaleAndPurchaseVoucher.ResolvedSaleAndPurchaseVoucherRepository;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
+import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -36,6 +35,7 @@ public class ResolvedSaleAndPurchaseVoucherServiceImpl implements ResolvedSaleAn
     private final NotificationService notificationService;
 
     @Override
+    @Transactional(readOnly = true)
     public List<ResolvedSaleAndPurchaseVoucher> searchAllVoucher(LocalDate date) {
         List<ResolvedSaleAndPurchaseVoucher> voucherList = new ArrayList<ResolvedSaleAndPurchaseVoucher>();
 
@@ -68,6 +68,7 @@ public class ResolvedSaleAndPurchaseVoucherServiceImpl implements ResolvedSaleAn
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<ResolvedVoucher> searchEntryVoucher(Long voucherId) {
         return resolvedSaleAndPurchaseVoucherRepository.findById(voucherId).get().getResolvedVouchers();
     }

@@ -18,11 +18,13 @@ public class AccountLedgerServiceImpl implements AccountLedgerService {
     private final ResolvedVoucherRepository resolvedVoucherRepository;
 
     @Override
+    @Transactional(readOnly = true)
     public List<AccountLedgerAccListDTO> getAccountLedgerAccList(AccountLedgerSearchDTO dto) {
         return resolvedVoucherRepository.accountLedgerList(dto);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public AccountLedgerShowAllListDTO getAccountLedgerShow(AccountLedgerDetailEntryDTO dto) {
 // 전기이월금 임의로 설정
         BigDecimal previousTotalDebitAmount = BigDecimal.ZERO;

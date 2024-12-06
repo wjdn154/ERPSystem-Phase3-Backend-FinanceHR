@@ -4,9 +4,9 @@ import com.megazone.ERPSystem_phase3_FinanceHR.hr.model.basic_configuration.Allo
 import com.megazone.ERPSystem_phase3_FinanceHR.hr.model.basic_configuration.dto.AllowanceEntryDTO;
 import com.megazone.ERPSystem_phase3_FinanceHR.hr.model.basic_configuration.dto.AllowanceShowDTO;
 import com.megazone.ERPSystem_phase3_FinanceHR.hr.repository.basic_configuration.AllowanceRepository;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -19,6 +19,7 @@ public class AllowanceServiceImpl implements AllowanceService {
     private final AllowanceRepository allowanceRepository;
 
     @Override
+    @Transactional(readOnly = true)
     public List<AllowanceShowDTO> show() {
         List<AllowanceShowDTO> allowances = allowanceRepository.findAll().stream().map(
                 (allowance) -> AllowanceShowDTO.create(allowance)
@@ -49,6 +50,7 @@ public class AllowanceServiceImpl implements AllowanceService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public BigDecimal taxableCalculator(BigDecimal amount, Long allowanceId) {
         Allowance allowance = allowanceRepository.findById(allowanceId).orElseThrow(
                 () -> new NoSuchElementException("해당하는 수당을 찾을 수 없습니다."));
