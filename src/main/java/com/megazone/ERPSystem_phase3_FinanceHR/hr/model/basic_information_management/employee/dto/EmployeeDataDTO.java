@@ -1,5 +1,6 @@
 package com.megazone.ERPSystem_phase3_FinanceHR.hr.model.basic_information_management.employee.dto;
 
+import com.megazone.ERPSystem_phase3_FinanceHR.hr.model.basic_information_management.employee.Employee;
 import com.megazone.ERPSystem_phase3_FinanceHR.hr.model.basic_information_management.employee.enums.EmploymentStatus;
 import com.megazone.ERPSystem_phase3_FinanceHR.hr.model.basic_information_management.employee.enums.EmploymentType;
 import lombok.AllArgsConstructor;

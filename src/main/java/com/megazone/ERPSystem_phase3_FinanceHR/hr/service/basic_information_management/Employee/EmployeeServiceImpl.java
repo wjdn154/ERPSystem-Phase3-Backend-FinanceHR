@@ -203,6 +203,8 @@ public class EmployeeServiceImpl implements EmployeeService {
         dto.setJobTitleId(employee.getJobTitle().getId());
         dto.setBankAccountId(employee.getBankAccount().getId());
         return dto;
+
+
     }
 
 
@@ -212,6 +214,34 @@ public class EmployeeServiceImpl implements EmployeeService {
         // id 에 해당하는 엔티티 데이터 조회
         Employee employee = employeeRepository.findById(id)
                 .orElseThrow(() ->  new RuntimeException(id+"에 해당하는 아이디를 찾을 수 없습니다."));
+
+
+
+        EmployeeShowToDTO originEmployeeDTO = new EmployeeShowToDTO(
+                employee.getId(),
+                employee.getEmployeeNumber(),
+                employee.getFirstName(),
+                employee.getLastName(),
+                employee.getRegistrationNumber(),
+                employee.getPhoneNumber(),
+                employee.getEmploymentStatus(),
+                employee.getEmploymentType(),
+                employee.getEmail(),
+                employee.getAddress(),
+                employee.getHireDate(),
+                employee.isHouseholdHead(),
+                employee.getImagePath(),
+                employee.getDepartment() != null ? employee.getDepartment().getId() : null,
+                employee.getDepartment() != null ? employee.getDepartment().getDepartmentName() : null,
+                employee.getDepartment() != null ? employee.getDepartment().getDepartmentCode() : null,
+                employee.getPosition() != null ? employee.getPosition().getPositionName() : null,
+                employee.getJobTitle() != null ? employee.getJobTitle().getJobTitleName() : null,
+                employee.getBankAccount() != null ? employee.getBankAccount().getId() : null,
+                employee.getBankAccount() != null ? employee.getBankAccount().getBank().getCode() : null,
+                employee.getBankAccount() != null ? employee.getBankAccount().getBank().getName() : null,  // 은행 이름 추가
+                employee.getBankAccount() != null ? employee.getBankAccount().getAccountNumber() : null   // 계좌번호 추가
+        );
+
 
             // 2. 엔티티 업데이트
             // employeeDTO의 값으로 엔티티의 값을 업데이트
@@ -333,7 +363,7 @@ public class EmployeeServiceImpl implements EmployeeService {
                     updatedEmployee.getBankAccount() != null ? updatedEmployee.getBankAccount().getBank().getName() : null,  // 은행 이름 추가
                     updatedEmployee.getBankAccount() != null ? updatedEmployee.getBankAccount().getAccountNumber() : null   // 계좌번호 추가
             );
-        employeeProducer.employeeUpdateProducer(updatedEmployeeDTO);
+        employeeProducer.employeeUpdateProducer(originEmployeeDTO,updatedEmployeeDTO);
             return Optional.of(updatedEmployeeDTO);
 
 
