@@ -93,8 +93,10 @@ public class EmployeeController {
         // JSON 문자열을 DTO로 변환
         ObjectMapper objectMapper = new ObjectMapper();
         EmployeeDataDTO employeeDataDTO = objectMapper.readValue(formattedValues, EmployeeDataDTO.class);
+        employeeDataDTO.setEmployeeId(id);
+        EmployeeUpdateDTO updateDTO = EmployeeUpdateDTO.create(employeeDataDTO,imageFile);
 
-        Optional<EmployeeShowToDTO> updatedEmployee = employeeService.updateEmployee(id, employeeDataDTO, imageFile);
+        Optional<EmployeeShowToDTO> updatedEmployee = employeeService.updateEmployee(updateDTO);
         return updatedEmployee.map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());
     }

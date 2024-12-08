@@ -210,37 +210,43 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     // 사원 정보 수정
     @Override
-    public Optional<EmployeeShowToDTO> updateEmployee(Long id, EmployeeDataDTO dto, MultipartFile imageFile) {
+    public Optional<EmployeeShowToDTO> updateEmployee(EmployeeUpdateDTO updateDataDTO) {
+
+        EmployeeDataDTO dto = updateDataDTO.getDataDTO();
+
+
         // id 에 해당하는 엔티티 데이터 조회
-        Employee employee = employeeRepository.findById(id)
-                .orElseThrow(() ->  new RuntimeException(id+"에 해당하는 아이디를 찾을 수 없습니다."));
+        Employee employee = employeeRepository.findById(dto.getEmployeeId())
+                .orElseThrow(() ->  new RuntimeException(dto.getEmployeeId()+"에 해당하는 아이디를 찾을 수 없습니다."));
 
 
+        EmployeeUpdateDTO originEmployeeDTO = new EmployeeUpdateDTO(
+                EmployeeDataDTO.create(employee),updateDataDTO.getImageFile());
 
-        EmployeeShowToDTO originEmployeeDTO = new EmployeeShowToDTO(
-                employee.getId(),
-                employee.getEmployeeNumber(),
-                employee.getFirstName(),
-                employee.getLastName(),
-                employee.getRegistrationNumber(),
-                employee.getPhoneNumber(),
-                employee.getEmploymentStatus(),
-                employee.getEmploymentType(),
-                employee.getEmail(),
-                employee.getAddress(),
-                employee.getHireDate(),
-                employee.isHouseholdHead(),
-                employee.getImagePath(),
-                employee.getDepartment() != null ? employee.getDepartment().getId() : null,
-                employee.getDepartment() != null ? employee.getDepartment().getDepartmentName() : null,
-                employee.getDepartment() != null ? employee.getDepartment().getDepartmentCode() : null,
-                employee.getPosition() != null ? employee.getPosition().getPositionName() : null,
-                employee.getJobTitle() != null ? employee.getJobTitle().getJobTitleName() : null,
-                employee.getBankAccount() != null ? employee.getBankAccount().getId() : null,
-                employee.getBankAccount() != null ? employee.getBankAccount().getBank().getCode() : null,
-                employee.getBankAccount() != null ? employee.getBankAccount().getBank().getName() : null,  // 은행 이름 추가
-                employee.getBankAccount() != null ? employee.getBankAccount().getAccountNumber() : null   // 계좌번호 추가
-        );
+//        EmployeeShowToDTO originEmployeeDTO = new EmployeeShowToDTO(
+//                employee.getId(),
+//                employee.getEmployeeNumber(),
+//                employee.getFirstName(),
+//                employee.getLastName(),
+//                employee.getRegistrationNumber(),
+//                employee.getPhoneNumber(),
+//                employee.getEmploymentStatus(),
+//                employee.getEmploymentType(),
+//                employee.getEmail(),
+//                employee.getAddress(),
+//                employee.getHireDate(),
+//                employee.isHouseholdHead(),
+//                employee.getImagePath(),
+//                employee.getDepartment() != null ? employee.getDepartment().getId() : null,
+//                employee.getDepartment() != null ? employee.getDepartment().getDepartmentName() : null,
+//                employee.getDepartment() != null ? employee.getDepartment().getDepartmentCode() : null,
+//                employee.getPosition() != null ? employee.getPosition().getPositionName() : null,
+//                employee.getJobTitle() != null ? employee.getJobTitle().getJobTitleName() : null,
+//                employee.getBankAccount() != null ? employee.getBankAccount().getId() : null,
+//                employee.getBankAccount() != null ? employee.getBankAccount().getBank().getCode() : null,
+//                employee.getBankAccount() != null ? employee.getBankAccount().getBank().getName() : null,  // 은행 이름 추가
+//                employee.getBankAccount() != null ? employee.getBankAccount().getAccountNumber() : null   // 계좌번호 추가
+//        );
 
 
             // 2. 엔티티 업데이트
@@ -311,7 +317,7 @@ public class EmployeeServiceImpl implements EmployeeService {
             throw new IllegalArgumentException("은행 정보와 계좌번호는 필수 입력 사항입니다.");
         }
         // 이미지가 전송된 경우 기존 이미지 삭제 후 새 이미지 저장
-        if (imageFile != null && !imageFile.isEmpty()) {
+        if (updateDataDTO.getImageFile() != null && !updateDataDTO.getImageFile().isEmpty()) {
             // 기존 이미지 경로 삭제 로직
             String oldImagePath = employee.getImagePath();
             if (oldImagePath != null) {
@@ -319,7 +325,7 @@ public class EmployeeServiceImpl implements EmployeeService {
             }
 
             // 새로운 이미지 업로드 및 경로 설정
-            String newImagePath = employeeImageService.uploadEmployeeImage(imageFile);
+            String newImagePath = employeeImageService.uploadEmployeeImage(updateDataDTO.getImageFile());
             employee.setImagePath(newImagePath);
         }
 
@@ -339,7 +345,10 @@ public class EmployeeServiceImpl implements EmployeeService {
 
 
             // 4. DTO로 변환하여 반환
-            EmployeeShowToDTO updatedEmployeeDTO = new EmployeeShowToDTO(
+        EmployeeUpdateDTO updatedEmployeeDTO = new EmployeeUpdateDTO(
+                EmployeeDataDTO.create(updatedEmployee),updateDataDTO.getImageFile());
+
+            EmployeeShowToDTO showEmployeeDTO = new EmployeeShowToDTO(
                     updatedEmployee.getId(),
                     updatedEmployee.getEmployeeNumber(),
                     updatedEmployee.getFirstName(),
@@ -364,7 +373,7 @@ public class EmployeeServiceImpl implements EmployeeService {
                     updatedEmployee.getBankAccount() != null ? updatedEmployee.getBankAccount().getAccountNumber() : null   // 계좌번호 추가
             );
         employeeProducer.employeeUpdateProducer(originEmployeeDTO,updatedEmployeeDTO);
-            return Optional.of(updatedEmployeeDTO);
+            return Optional.of(showEmployeeDTO);
 
 
     }

@@ -37,4 +37,33 @@ public class EmployeeDataDTO {
     private String name;
     private String code;
     private String accountNumber;  // 계좌 번호
+
+    public static EmployeeDataDTO create(Employee employee) {
+        return new EmployeeDataDTO(
+                employee.getId(),
+                employee.getFirstName(),
+                employee.getLastName(),
+                employee.getPhoneNumber(),
+                employee.getHireDate().toString(),
+                employee.getEmploymentStatus(),
+                employee.getEmploymentType(),
+                employee.getEmail(),
+                employee.getAddress(),
+                employee.getRegistrationNumber(),
+                employee.isHouseholdHead(),
+                employee.getImagePath(),
+                employee.getDepartment().getId(),
+                employee.getDepartment().getDepartmentCode(),
+                employee.getDepartment().getDepartmentName(),
+                employee.getPosition().getId(),
+                employee.getPosition().getPositionCode(),
+                employee.getPosition().getPositionName(),
+                employee.getJobTitle().getId(),
+                employee.getJobTitle().getJobTitleCode(),
+                employee.getJobTitle().getJobTitleName(),
+                employee.getBankAccount().getBank().getId(),
+                employee.getBankAccount().getBank().getName(),
+                employee.getBankAccount().getBank().getCode(),
+                employee.getBankAccount().getAccountNumber());
+    }
 }

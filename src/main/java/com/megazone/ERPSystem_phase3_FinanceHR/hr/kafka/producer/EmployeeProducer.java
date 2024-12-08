@@ -3,6 +3,7 @@ package com.megazone.ERPSystem_phase3_FinanceHR.hr.kafka.producer;
 import com.megazone.ERPSystem_phase3_FinanceHR.common.config.multi_tenant.TenantContext;
 import com.megazone.ERPSystem_phase3_FinanceHR.financial.KafkaProducerHelper;
 import com.megazone.ERPSystem_phase3_FinanceHR.hr.model.basic_information_management.employee.dto.EmployeeShowToDTO;
+import com.megazone.ERPSystem_phase3_FinanceHR.hr.model.basic_information_management.employee.dto.EmployeeUpdateDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -18,7 +19,7 @@ public class EmployeeProducer {
     private final String employeeUpdateTopic = "employee-update";
     private final String employeeSaveTopic = "employee-save";
 
-    public void employeeUpdateProducer(EmployeeShowToDTO originDto, EmployeeShowToDTO updateDto) {
+    public void employeeUpdateProducer(EmployeeUpdateDTO originDto, EmployeeUpdateDTO updateDto) {
         String requestId = UUID.randomUUID().toString();
         String currentTenant = TenantContext.getCurrentTenant();
 

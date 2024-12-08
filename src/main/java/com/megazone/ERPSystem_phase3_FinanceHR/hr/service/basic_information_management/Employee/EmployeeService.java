@@ -19,7 +19,7 @@ public interface EmployeeService {
     Optional<EmployeeOneDTO> findEmployeeById(Long id);
 
     // 사원 수정
-    Optional<EmployeeShowToDTO> updateEmployee(Long id, EmployeeDataDTO employeeDataDTO, MultipartFile imageFile);
+    Optional<EmployeeShowToDTO> updateEmployee(EmployeeUpdateDTO updateDTO);
 
     // 사원 등록. 저장
     Optional<EmployeeShowToDTO> saveEmployee(EmployeeCreateDTO employeeCreateDTO, MultipartFile imageFile);

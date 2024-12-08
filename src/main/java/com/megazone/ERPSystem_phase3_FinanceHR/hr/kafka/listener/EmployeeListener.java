@@ -6,6 +6,7 @@ import com.megazone.ERPSystem_phase3_FinanceHR.financial.KafkaProducerHelper;
 import com.megazone.ERPSystem_phase3_FinanceHR.hr.model.attendance_management.dto.EmployeeAttendanceDTO;
 import com.megazone.ERPSystem_phase3_FinanceHR.hr.model.basic_information_management.employee.dto.EmployeeOneDTO;
 import com.megazone.ERPSystem_phase3_FinanceHR.hr.model.basic_information_management.employee.dto.EmployeeShowToDTO;
+import com.megazone.ERPSystem_phase3_FinanceHR.hr.model.basic_information_management.employee.dto.EmployeeUpdateDTO;
 import com.megazone.ERPSystem_phase3_FinanceHR.hr.service.attendance_management.Attendance.AttendanceService;
 import com.megazone.ERPSystem_phase3_FinanceHR.hr.service.basic_information_management.Employee.EmployeeService;
 import io.jsonwebtoken.lang.Maps;
@@ -101,28 +102,26 @@ public class EmployeeListener {
         }
     }
 
-//    @KafkaListener(topics = "employee-update-compensation", groupId = "employee-service-group")
-//    public void handleEmployeeUpdateCompensation(Map<String, Object> response) {
-//        String requestId = (String) response.get("requestId");
-//
-//        try {
-//            TenantContext.setCurrentTenant(response.get("tenant").toString());
-//
-//            if (response.containsKey("originData")) {
-//                EmployeeShowToDTO employeeShowToDTO = objectMapper.convertValue(response.get("originData"), EmployeeShowToDTO.class);
-//                System.out.println(employeeShowToDTO.getLastName().concat(employeeShowToDTO.getFirstName()) + " 사원 보상트랜잭션 실행");
-//                employeeService.updateEmployee(employeeShowToDTO.getId(),);
-//                System.out.println("보상트렌젝션 완료");
-////                kafkaProducerHelper.sagaSendSuccessResponse(requestId,"common-service-group");
-//            } else if (response.containsKey("error")) {
-////                kafkaProducerHelper.sagaSendErrorResponse(requestId,"logistics-service-group",response.get("error").toString());
-//            }
-//        } catch (Exception e) {
-////            kafkaProducerHelper.sagaSendErrorResponse(requestId,"logistics-service-group",e.getMessage());
-//            e.printStackTrace();
-//        } finally {
-//            TenantContext.setCurrentTenant("PUBLIC");
-//        }
-//    }
+    @KafkaListener(topics = "employee-update-compensation", groupId = "employee-service-group")
+    public void handleEmployeeUpdateCompensation(Map<String, Object> response) {
+        try {
+            TenantContext.setCurrentTenant(response.get("tenant").toString());
+
+            if (response.containsKey("originData")) {
+                EmployeeUpdateDTO employeeShowToDTO = objectMapper.convertValue(response.get("originData"), EmployeeUpdateDTO.class);
+                System.out.println("보상트랜잭션 실행");
+                employeeService.updateEmployee(employeeShowToDTO);
+                System.out.println("보상트렌젝션 완료");
+//                kafkaProducerHelper.sagaSendSuccessResponse(requestId,"common-service-group");
+            } else if (response.containsKey("error")) {
+//                kafkaProducerHelper.sagaSendErrorResponse(requestId,"logistics-service-group",response.get("error").toString());
+            }
+        } catch (Exception e) {
+//            kafkaProducerHelper.sagaSendErrorResponse(requestId,"logistics-service-group",e.getMessage());
+            e.printStackTrace();
+        } finally {
+            TenantContext.setCurrentTenant("PUBLIC");
+        }
+    }
 
 }
