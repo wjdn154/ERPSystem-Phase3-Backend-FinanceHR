@@ -47,7 +47,7 @@ spring:
     type: redis
   data:
     redis:
-      host: redis-service-a-master  # Redis 서비스 이름
+      host: redis-service-b-master  # Redis 서비스 이름
       port: 6379                    # Redis 포트
       password: 1234
   sql:
