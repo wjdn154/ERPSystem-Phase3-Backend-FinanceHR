@@ -8,6 +8,7 @@ import com.megazone.ERPSystem_phase3_FinanceHR.Integrated.model.notification.enu
 import com.megazone.ERPSystem_phase3_FinanceHR.Integrated.model.notification.enums.PermissionType;
 import com.megazone.ERPSystem_phase3_FinanceHR.Integrated.model.service.IntegratedService;
 import com.megazone.ERPSystem_phase3_FinanceHR.Integrated.model.service.NotificationService;
+import com.megazone.ERPSystem_phase3_FinanceHR.common.config.redis.RedisCacheable;
 import com.megazone.ERPSystem_phase3_FinanceHR.financial.model.basic_information_management.company.Company;
 import com.megazone.ERPSystem_phase3_FinanceHR.financial.model.common.Bank;
 import com.megazone.ERPSystem_phase3_FinanceHR.financial.repository.basic_information_management.company.CompanyRepository;
@@ -92,6 +93,7 @@ public class EmployeeServiceImpl implements EmployeeService {
                 .collect(Collectors.toList());
     }
 
+    @RedisCacheable(cacheName = "employeesAll")
     @Override
     @Transactional(readOnly = true)
     public List<EmployeeShowDTO> findAllEmployees() {
