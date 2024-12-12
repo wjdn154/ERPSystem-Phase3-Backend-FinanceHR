@@ -4,6 +4,7 @@ import com.megazone.ERPSystem_phase3_FinanceHR.hr.model.attendance_management.Ov
 import com.megazone.ERPSystem_phase3_FinanceHR.hr.repository.attendance_management.Overtime.OvertimeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -29,6 +30,7 @@ public class OvertimeServiceImpl implements OvertimeService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Optional<Overtime> getOvertimeById(Long id) {
         return overtimeRepository.findById(id);
     }

@@ -6,9 +6,9 @@ import com.megazone.ERPSystem_phase3_FinanceHR.financial.model.ledger.dto.DailyA
 import com.megazone.ERPSystem_phase3_FinanceHR.financial.model.ledger.dto.DailyAndMonthJournalShowDTO;
 import com.megazone.ERPSystem_phase3_FinanceHR.financial.model.ledger.enums.DailyAndMonthType;
 import com.megazone.ERPSystem_phase3_FinanceHR.financial.repository.voucher_entry.general_voucher_entry.resolvedVoucher.ResolvedVoucherRepository;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.*;
@@ -21,6 +21,7 @@ public class DailyAndMonthJournalServiceImpl implements DailyAndMonthJournalServ
 
 
     @Override
+    @Transactional(readOnly = true)
     public List<DailyAndMonthJournalShowDTO> dailyLedgerShow(DailyAndMonthJournalSearchDTO dto) {
         List<DailyAndMonthJournalDTO> queryResults = resolvedVoucherRepository.dailyLedgerList(dto);
 

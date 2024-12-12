@@ -16,12 +16,14 @@ public class GeneralServiceImpl implements GeneralService {
     private final ResolvedVoucherRepository resolvedVoucherRepository;
 
     @Override
+    @Transactional(readOnly = true)
     public List<GeneralAccountListDTO> getGeneralShow(GeneralDTO dto) {
         List<GeneralAccountListDTO> generalAccountListDTOS = resolvedVoucherRepository.generalList(dto);
         return generalAccountListDTOS;
     }
 
     @Override
+    @Transactional(readOnly = true)
     public GeneralShowAllDTO getGeneralSelectShow(GeneralSelectDTO dto) {
         // 임시 초기잔액 설정
         BigDecimal previousDebitAmount= BigDecimal.valueOf(0);

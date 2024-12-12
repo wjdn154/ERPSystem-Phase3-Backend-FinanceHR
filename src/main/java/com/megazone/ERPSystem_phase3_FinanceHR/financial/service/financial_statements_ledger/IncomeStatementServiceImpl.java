@@ -23,6 +23,7 @@ public class IncomeStatementServiceImpl implements IncomeStatementService {
     private final ResolvedVoucherRepository resolvedVoucherRepository;
 
     @Override
+    @Transactional(readOnly = true)
     public List<IncomeStatementLedgerShowDTO> show(IncomeStatementSearchDTO dto) {
         // 1. 쿼리 결과 가져오기
         List<IncomeStatementLedgerDTO> queryResults = resolvedVoucherRepository.incomeStatementShow(dto);
@@ -30,6 +31,7 @@ public class IncomeStatementServiceImpl implements IncomeStatementService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public IncomeStatementLedgerDashBoardDTO dashBoardShow() {
         BigDecimal totalRevenue = BigDecimal.ZERO;
         BigDecimal totalExpense = BigDecimal.ZERO;

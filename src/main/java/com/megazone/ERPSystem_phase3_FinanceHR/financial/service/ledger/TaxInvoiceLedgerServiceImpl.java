@@ -24,6 +24,7 @@ public class TaxInvoiceLedgerServiceImpl implements TaxInvoiceLedgerService {
      */
 
     @Override
+    @Transactional(readOnly = true)
     public List<TaxInvoiceLedgerShowAllDTO> show(TaxInvoiceLedgerSearchDTO dto) {
         List<TaxInvoiceLedgerShowDTO> resultList = resolvedSaleAndPurchaseVoucherRepository.showTaxInvoiceLedger(dto);
 

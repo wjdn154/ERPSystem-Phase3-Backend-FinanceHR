@@ -26,7 +26,7 @@ public class EmployeeShowToDTO {
     private boolean isHouseholdHead;
     private String imagePath;
 
-
+    private Long departmentId;
     private String departmentName;
     private String departmentCode; // 부서 ID
     private String positionName; // 직위 ID

@@ -3,6 +3,7 @@ package com.megazone.ERPSystem_phase3_FinanceHR.hr.repository.basic_information_
 import com.megazone.ERPSystem_phase3_FinanceHR.hr.model.basic_information_management.employee.*;
 import com.megazone.ERPSystem_phase3_FinanceHR.hr.model.basic_information_management.employee.dto.BankAccountDTO;
 import com.megazone.ERPSystem_phase3_FinanceHR.hr.model.basic_information_management.employee.dto.EmployeeOneDTO;
+import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -36,36 +37,42 @@ public class EmployeeRepositoryImpl implements EmployeeRepositoryCustom{
         QPosition position = QPosition.position;
         QJobTitle jobTitle = QJobTitle.jobTitle;
 
+        BooleanBuilder whereCondition = new BooleanBuilder();
+
+        if (searchId != null && !searchId.isEmpty()) {
+            whereCondition.and(employee.id.in(searchId));
+        }
+
         return queryFactory.select(
-                Projections.constructor(EmployeeOneDTO.class,
-                        employee.id,
-                        employee.employeeNumber,
-                        employee.firstName,
-                        employee.lastName,
-                        employee.registrationNumber,
-                        employee.phoneNumber,
-                        employee.employmentStatus,
-                        employee.employmentType,
-                        employee.email,
-                        employee.address,
-                        employee.hireDate,
-                        employee.isHouseholdHead,
-                        employee.imagePath,
-                        department.id,
-                        department.departmentCode,
-                        department.departmentName,
-                        position.id,
-                        position.positionCode,
-                        position.positionName,
-                        jobTitle.id,
-                        jobTitle.jobTitleCode,
-                        jobTitle.jobTitleName,
-                        Expressions.nullExpression(BankAccountDTO.class)))
+                        Projections.constructor(EmployeeOneDTO.class,
+                                employee.id,
+                                employee.employeeNumber,
+                                employee.firstName,
+                                employee.lastName,
+                                employee.registrationNumber,
+                                employee.phoneNumber,
+                                employee.employmentStatus,
+                                employee.employmentType,
+                                employee.email,
+                                employee.address,
+                                employee.hireDate,
+                                employee.isHouseholdHead,
+                                employee.imagePath,
+                                department.id,
+                                department.departmentCode,
+                                department.departmentName,
+                                position.id,
+                                position.positionCode,
+                                position.positionName,
+                                jobTitle.id,
+                                jobTitle.jobTitleCode,
+                                jobTitle.jobTitleName,
+                                Expressions.nullExpression(BankAccountDTO.class)))
                 .from(employee)
-                .join(employee.department,department)
-                .join(employee.position,position)
-                .join(employee.jobTitle,jobTitle)
-                .where(employee.id.in(searchId))
+                .join(employee.department, department)
+                .join(employee.position, position)
+                .join(employee.jobTitle, jobTitle)
+                .where(whereCondition)
                 .fetch();
     }
 }

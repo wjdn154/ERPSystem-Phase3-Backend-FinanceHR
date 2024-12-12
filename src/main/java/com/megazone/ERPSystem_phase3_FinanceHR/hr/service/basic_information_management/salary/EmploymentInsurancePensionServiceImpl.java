@@ -21,6 +21,7 @@ public class EmploymentInsurancePensionServiceImpl implements EmploymentInsuranc
     private final PositionSalaryStepRepository employmentPositionSalaryStepRepository;
 
     @Override
+    @Transactional(readOnly = true)
     public BigDecimal calculator(InsurancePensionCalculatorDTO dto) {
         BigDecimal salaryAmount =  employmentPositionSalaryStepRepository.getSalaryAmount(dto.getPositionId(),dto.getSalaryStepId());
 
@@ -29,12 +30,14 @@ public class EmploymentInsurancePensionServiceImpl implements EmploymentInsuranc
     }
 
     @Override
+    @Transactional(readOnly = true)
     public BigDecimal calculator(BigDecimal amount) {
         return amount.multiply(employmentInsurancePensionRepository.findFirstByEndDateIsNull().orElseThrow(
                 () -> new NoSuchElementException("해당하는 국민연금 데이터가 없습니다.")).getEmployeeRate()).setScale(0, BigDecimal.ROUND_HALF_UP);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<EmploymentInsurancePensionShowDTO> showAll() {
         List<EmploymentInsurancePension> list = employmentInsurancePensionRepository.findAll();
         return list.stream().map(

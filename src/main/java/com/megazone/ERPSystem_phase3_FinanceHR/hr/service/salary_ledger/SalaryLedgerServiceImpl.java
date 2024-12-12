@@ -20,9 +20,9 @@ import com.megazone.ERPSystem_phase3_FinanceHR.hr.service.basic_information_mana
 import com.megazone.ERPSystem_phase3_FinanceHR.hr.service.basic_information_management.salary.HealthInsurancePensionService;
 import com.megazone.ERPSystem_phase3_FinanceHR.hr.service.basic_information_management.salary.LongTermCareInsurancePensionService;
 import com.megazone.ERPSystem_phase3_FinanceHR.hr.service.basic_information_management.salary.NationalPensionService;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -31,8 +31,8 @@ import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
-@Transactional
 @Service
+@Transactional
 public class SalaryLedgerServiceImpl implements SalaryLedgerService {
 
     private final SalaryLedgerRepository salaryLedgerRepository;
@@ -54,6 +54,7 @@ public class SalaryLedgerServiceImpl implements SalaryLedgerService {
      */
 
     @Override
+    @Transactional(readOnly = true)
     public SalaryLedgerDTO showSalaryLedger(SalaryLedgerSearchDTO dto) {
         SalaryLedgerDTO result = salaryLedgerRepository.findLedger(dto);
 
@@ -128,6 +129,7 @@ public class SalaryLedgerServiceImpl implements SalaryLedgerService {
 
 
     @Override
+    @Transactional(readOnly = true)
     public SalaryLedgerDTO salaryLedgerCalculator(Long salaryLedgerId) {
 
         SalaryLedger salaryLedger = salaryLedgerRepository.findById(salaryLedgerId).orElseThrow(
@@ -283,6 +285,7 @@ public class SalaryLedgerServiceImpl implements SalaryLedgerService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<PaymentStatusManagementShowDTO> showPaymentStatusManagement(PaymentStatusManagementSearchDTO dto) {
         List<PaymentStatusManagementShowDTO> results = new ArrayList<>(salaryLedgerRepository.showPaymentStatusManagement(dto));
         PaymentStatusManagementShowDTO totalPaymentStatus = new PaymentStatusManagementShowDTO();
